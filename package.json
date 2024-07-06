@@ -6,9 +6,9 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
-    "eslint": "eslint --ext .ts --ext .tsx src",
+    "lint": "eslint src",
     "format:fix": "prettier --write .",
-    "prepublish": "npm run eslint"
+    "prepublish": "npm run lint"
   },
   "dependencies": {
     "axios": "^1.7.2",
