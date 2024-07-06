@@ -1,1 +1,1 @@
-npm run prepublish
+npm run lint
