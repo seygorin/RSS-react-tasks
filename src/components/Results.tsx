@@ -89,56 +89,62 @@ class Results extends Component<Props, State> {
 
     return (
       <div>
-        <ul className="results-list">
-          {people.map((person) => (
-            <li className="result-item" key={person.name}>
-              <h3>{person.name}</h3>
-              <div className="attributes-grid">
-                <p>
-                  <strong>Height</strong>: {person.height}
-                </p>
-                <p>
-                  <strong>Mass</strong>: {person.mass}
-                </p>
-                <p>
-                  <strong>Hair Color</strong>: {person.hair_color}
-                </p>
-                <p>
-                  <strong>Skin Color</strong>: {person.skin_color}
-                </p>
-                <p>
-                  <strong>Eye Color</strong>: {person.eye_color}
-                </p>
-                <p>
-                  <strong>Birth Year</strong>: {person.birth_year}
-                </p>
-                <p>
-                  <strong>Gender</strong>: {person.gender}
-                </p>
+        {people.length > 0 ? (
+          <>
+            <ul className="results-list">
+              {people.map((person) => (
+                <li className="result-item" key={person.name}>
+                  <h3>{person.name}</h3>
+                  <div className="attributes-grid">
+                    <p>
+                      <strong>Height</strong>: {person.height}
+                    </p>
+                    <p>
+                      <strong>Mass</strong>: {person.mass}
+                    </p>
+                    <p>
+                      <strong>Hair Color</strong>: {person.hair_color}
+                    </p>
+                    <p>
+                      <strong>Skin Color</strong>: {person.skin_color}
+                    </p>
+                    <p>
+                      <strong>Eye Color</strong>: {person.eye_color}
+                    </p>
+                    <p>
+                      <strong>Birth Year</strong>: {person.birth_year}
+                    </p>
+                    <p>
+                      <strong>Gender</strong>: {person.gender}
+                    </p>
+                  </div>
+                </li>
+              ))}
+            </ul>
+            {!isSearchMode && (
+              <div className="pagination">
+                <Button
+                  onClick={() => this.handlePageChange('prev')}
+                  disabled={currentPage === 1}
+                  variant="pagination"
+                >
+                  Previous
+                </Button>
+                <span>
+                  Page {currentPage} of {totalPages}
+                </span>
+                <Button
+                  onClick={() => this.handlePageChange('next')}
+                  disabled={currentPage === totalPages}
+                  variant="pagination"
+                >
+                  Next
+                </Button>
               </div>
-            </li>
-          ))}
-        </ul>
-        {!isSearchMode && (
-          <div className="pagination">
-            <Button
-              onClick={() => this.handlePageChange('prev')}
-              disabled={currentPage === 1}
-              variant="pagination"
-            >
-              Previous
-            </Button>
-            <span>
-              Page {currentPage} of {totalPages}
-            </span>
-            <Button
-              onClick={() => this.handlePageChange('next')}
-              disabled={currentPage === totalPages}
-              variant="pagination"
-            >
-              Next
-            </Button>
-          </div>
+            )}
+          </>
+        ) : (
+          <p>Nothing found</p>
         )}
       </div>
     );
