@@ -1,52 +1,82 @@
-import { Component } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useNavigate, Outlet, useSearchParams } from 'react-router-dom';
+import useLocalStorage from '../utils/useLocalStorage';
+
 import SearchInput from '../components/SearchInput';
 import Results from '../components/Results';
 import Button from '../components/Button';
 import './MainPage.css';
 
-class MainPage extends Component {
-  state = {
-    searchTerm: '',
-    isInitialLoadComplete: false,
-    hasError: false,
+type ItemDetails = {
+  id: number;
+};
+
+const MainPage: React.FC = () => {
+  const [searchTerm, setSearchTerm] = useLocalStorage('searchTerm', '');
+  const [isInitialLoadComplete, setIsInitialLoadComplete] = useState(false);
+  const [selectedItemDetails, setSelectedItemDetails] =
+    useState<ItemDetails | null>(null);
+  const [hasError, setHasError] = useState(false);
+
+  const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const page = searchParams.get('page') || '1';
+
+  useEffect(() => {
+    setIsInitialLoadComplete(true);
+  }, []);
+
+  const handleSearch = (searchTerm: string) => {
+    setSearchTerm(searchTerm);
+    setSearchParams({ page: '1' });
   };
 
-  componentDidMount() {
-    const savedSearchTerm = localStorage.getItem('searchTerm') || '';
-    this.setState({ searchTerm: savedSearchTerm, isInitialLoadComplete: true });
+  const throwError = () => {
+    setHasError(true);
+  };
+
+  const handleItemClick = (id: number) => {
+    setSelectedItemDetails({ id });
+    navigate(`/details/${id}?page=${page}`);
+  };
+
+  const closeDetails = () => {
+    setSelectedItemDetails(null);
+    navigate(`/?page=${page}`);
+  };
+
+  if (hasError) {
+    throw new Error('Test error');
   }
 
-  handleSearch = (searchTerm: string) => {
-    localStorage.setItem('searchTerm', searchTerm);
-    this.setState({ searchTerm });
-  };
-
-  throwError = (): void => {
-    this.setState({ hasError: true });
-  };
-
-  render() {
-    const { searchTerm, isInitialLoadComplete } = this.state;
-    if (this.state.hasError) {
-      throw new Error('Test error');
-    }
-    return (
-      <main className="main-page">
-        <Button variant="errorBoundary" onClick={this.throwError}>
-          Throw Error
-        </Button>
-        <div className="top-section">
-          <SearchInput
-            onSearch={this.handleSearch}
-            initialSearchTerm={searchTerm}
-          />
+  return (
+    <main className="main-page">
+      <Button variant="errorBoundary" onClick={throwError}>
+        Throw Error
+      </Button>
+      <div className="top-section">
+        <SearchInput onSearch={handleSearch} initialSearchTerm={searchTerm} />
+      </div>
+      <div
+        className="content-section"
+        onClick={() => selectedItemDetails && closeDetails()}
+      >
+        <div className="left-section">
+          {isInitialLoadComplete && (
+            <Results searchTerm={searchTerm} onItemClick={handleItemClick} />
+          )}
         </div>
-        <div className="bottom-section">
-          {isInitialLoadComplete && <Results searchTerm={searchTerm} />}
-        </div>
-      </main>
-    );
-  }
-}
+        {selectedItemDetails && (
+          <div className="right-section">
+            <Outlet />
+            <Button variant="pagination" onClick={closeDetails}>
+              Close
+            </Button>
+          </div>
+        )}
+      </div>
+    </main>
+  );
+};
 
 export default MainPage;

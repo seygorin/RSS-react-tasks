@@ -1,0 +1,13 @@
+.details-container {
+  padding: 20px;
+}
+
+.loading {
+  text-align: center;
+}
+
+.attributes-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
