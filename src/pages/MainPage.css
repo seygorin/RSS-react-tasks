@@ -1,0 +1,21 @@
+.main-page {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
+.top-section {
+  flex: 0.5;
+  padding: 10px;
+  background-color: rgb(130, 130, 229);
+  display: flex;
+  justify-content: end;
+  align-items: center;
+}
+
+.bottom-section {
+  flex: 4;
+  padding: 10px;
+  background-color: #fff;
+  overflow-y: auto;
+}
