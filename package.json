@@ -7,7 +7,7 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "eslint src",
-    "test": "vitest",
+    "test": "vitest run",
     "test:coverage": "vitest run --coverage",
     "format:fix": "prettier --write .",
     "prepublish": "npm run lint"
