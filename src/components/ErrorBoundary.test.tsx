@@ -1,4 +1,4 @@
-import { describe, it, expect } from 'vitest';
+import { beforeAll, afterAll, describe, it, expect, vi } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import ErrorBoundary from './ErrorBoundary';
 
@@ -7,6 +7,14 @@ const ThrowError: React.FC = () => {
 };
 
 describe('ErrorBoundary Component', () => {
+  beforeAll(() => {
+    vi.spyOn(console, 'error').mockImplementation(() => {});
+  });
+
+  afterAll(() => {
+    (console.error as vi.Mock).mockRestore();
+  });
+
   it('renders children without error', () => {
     render(
       <ErrorBoundary>
@@ -22,6 +30,7 @@ describe('ErrorBoundary Component', () => {
         <ThrowError />
       </ErrorBoundary>,
     );
+
     expect(screen.getByText('Something went wrong:')).toBeInTheDocument();
     expect(screen.getByText('Test error')).toBeInTheDocument();
     expect(screen.getByRole('button', { name: /Reload/i })).toBeInTheDocument();
