@@ -10,10 +10,22 @@ describe('API functions tests', () => {
     it('should fetch people with given search term and page', async () => {
       const mockData: ApiResponse = {
         count: 1,
-        results: [{ name: 'Luke Skywalker' }],
+        results: [
+          {
+            name: 'Luke Skywalker',
+            height: '172',
+            mass: '77',
+            hair_color: 'blond',
+            skin_color: 'fair',
+            eye_color: 'blue',
+            birth_year: '19BBY',
+            gender: 'male',
+            url: 'https://swapi.dev/api/people/1/',
+          },
+        ],
       };
 
-      (axios.get as vi.Mock).mockResolvedValueOnce({ data: mockData });
+      vi.mocked(axios.get).mockResolvedValueOnce({ data: mockData });
 
       const searchTerm = 'Luke';
       const page = 1;
@@ -27,7 +39,7 @@ describe('API functions tests', () => {
 
     it('should handle errors', async () => {
       const errorMessage = 'Network Error';
-      (axios.get as vi.Mock).mockRejectedValueOnce(new Error(errorMessage));
+      vi.mocked(axios.get).mockRejectedValueOnce(new Error(errorMessage));
 
       const searchTerm = 'Luke';
       const page = 1;
@@ -54,7 +66,7 @@ describe('API functions tests', () => {
         url: 'https://swapi.dev/api/people/1/',
       };
 
-      (axios.get as vi.Mock).mockResolvedValueOnce({ data: mockData });
+      vi.mocked(axios.get).mockResolvedValueOnce({ data: mockData });
 
       const id = '1';
       const response = await fetchPersonDetails(id);
@@ -67,7 +79,7 @@ describe('API functions tests', () => {
 
     it('should handle errors', async () => {
       const errorMessage = 'Network Error';
-      (axios.get as vi.Mock).mockRejectedValueOnce(new Error(errorMessage));
+      vi.mocked(axios.get).mockRejectedValueOnce(new Error(errorMessage));
 
       const id = '1';
 

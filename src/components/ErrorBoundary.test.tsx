@@ -12,7 +12,7 @@ describe('ErrorBoundary Component', () => {
   });
 
   afterAll(() => {
-    (console.error as vi.Mock).mockRestore();
+    vi.restoreAllMocks();
   });
 
   it('renders children without error', () => {
