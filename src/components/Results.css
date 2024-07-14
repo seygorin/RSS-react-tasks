@@ -16,13 +16,6 @@
   background-color: #f9f9f9;
 }
 
-.loading {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 50vh;
-}
-
 .result-item h3 {
   margin: 0 0 10px;
   text-align: center;

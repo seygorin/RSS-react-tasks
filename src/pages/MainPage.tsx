@@ -1,49 +1,22 @@
-import React, { useState, useEffect } from 'react';
-import { useNavigate, Outlet, useSearchParams } from 'react-router-dom';
-import useLocalStorage from '../utils/useLocalStorage';
-
+import React from 'react';
+import { Outlet } from 'react-router-dom';
+import useMainPageLogic from '../hooks/useMainPage';
 import SearchInput from '../components/SearchInput';
 import Results from '../components/Results';
 import Button from '../components/Button';
 import './MainPage.css';
 
-type ItemDetails = {
-  id: number;
-};
-
 const MainPage: React.FC = () => {
-  const [searchTerm, setSearchTerm] = useLocalStorage('searchTerm', '');
-  const [isInitialLoadComplete, setIsInitialLoadComplete] = useState(false);
-  const [selectedItemDetails, setSelectedItemDetails] =
-    useState<ItemDetails | null>(null);
-  const [hasError, setHasError] = useState(false);
-
-  const navigate = useNavigate();
-  const [searchParams, setSearchParams] = useSearchParams();
-  const page = searchParams.get('page') || '1';
-
-  useEffect(() => {
-    setIsInitialLoadComplete(true);
-  }, []);
-
-  const handleSearch = (searchTerm: string) => {
-    setSearchTerm(searchTerm);
-    setSearchParams({ page: '1' });
-  };
-
-  const throwError = () => {
-    setHasError(true);
-  };
-
-  const handleItemClick = (id: number) => {
-    setSelectedItemDetails({ id });
-    navigate(`/details/${id}?page=${page}`);
-  };
-
-  const closeDetails = () => {
-    setSelectedItemDetails(null);
-    navigate(`/?page=${page}`);
-  };
+  const {
+    searchTerm,
+    isInitialLoadComplete,
+    selectedItemDetails,
+    hasError,
+    handleSearch,
+    throwError,
+    handleItemClick,
+    closeDetails,
+  } = useMainPageLogic();
 
   if (hasError) {
     throw new Error('Test error');

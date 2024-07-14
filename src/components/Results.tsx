@@ -2,7 +2,11 @@ import React, { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { fetchPeople } from '../services/api';
 import { Person } from '../services/interfaces';
-import Button from './Button';
+import CardList from './CardList';
+import Pagination from './Pagination';
+import Loading from './Loading';
+import ErrorMessage from './ErrorMessage';
+import NoResults from './NoResults';
 import './Results.css';
 
 interface Props {
@@ -18,12 +22,6 @@ const Results: React.FC<Props> = ({ searchTerm, onItemClick }) => {
 
   const [searchParams, setSearchParams] = useSearchParams();
   const currentPage = parseInt(searchParams.get('page') || '1', 10);
-
-  const extractIdFromUrl = (url: string): string => {
-    const idPattern = /\/([0-9]+)\/$/;
-    const match = url.match(idPattern);
-    return match ? match[1] : '';
-  };
 
   useEffect(() => {
     loadPeople();
@@ -46,83 +44,30 @@ const Results: React.FC<Props> = ({ searchTerm, onItemClick }) => {
   };
 
   const handlePageChange = (newPage: number) => {
-    if (newPage === 1) {
-      setSearchParams({ search: searchTerm });
-    } else {
-      setSearchParams({ search: searchTerm, page: newPage.toString() });
-    }
+    setSearchParams({ page: newPage.toString() });
   };
 
   if (loading) {
-    return <p className="loading">Loading...</p>;
+    return <Loading />;
   }
 
   if (error) {
-    return <p>{error}</p>;
+    return <ErrorMessage message={error} />;
   }
 
   return (
     <div className="results-container">
       {people.length > 0 ? (
         <>
-          <ul className="results-list">
-            {people.map((person) => (
-              <li
-                className="result-item"
-                key={person.name}
-                onClick={() =>
-                  onItemClick(parseInt(extractIdFromUrl(person.url), 10))
-                }
-              >
-                <h3>{person.name}</h3>
-                <div className="attributes-grid">
-                  <p>
-                    <strong>Height</strong>: {person.height}
-                  </p>
-                  <p>
-                    <strong>Mass</strong>: {person.mass}
-                  </p>
-                  <p>
-                    <strong>Hair Color</strong>: {person.hair_color}
-                  </p>
-                  <p>
-                    <strong>Skin Color</strong>: {person.skin_color}
-                  </p>
-                  <p>
-                    <strong>Eye Color</strong>: {person.eye_color}
-                  </p>
-                  <p>
-                    <strong>Birth Year</strong>: {person.birth_year}
-                  </p>
-                  <p>
-                    <strong>Gender</strong>: {person.gender}
-                  </p>
-                </div>
-              </li>
-            ))}
-          </ul>
-          <div className="pagination">
-            <Button
-              onClick={() => handlePageChange(currentPage - 1)}
-              disabled={currentPage === 1}
-              variant="pagination"
-            >
-              Previous
-            </Button>
-            <span>
-              Page {currentPage} of {totalPages}
-            </span>
-            <Button
-              onClick={() => handlePageChange(currentPage + 1)}
-              disabled={currentPage === totalPages}
-              variant="pagination"
-            >
-              Next
-            </Button>
-          </div>
+          <CardList people={people} onItemClick={onItemClick} />
+          <Pagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            onPageChange={handlePageChange}
+          />
         </>
       ) : (
-        <p>Nothing found</p>
+        <NoResults />
       )}
     </div>
   );
