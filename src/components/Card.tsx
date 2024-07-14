@@ -1,6 +1,7 @@
 import React from 'react';
 import { Person } from '../services/interfaces';
 
+import './Card.css';
 interface CardProps {
   person: Person;
   onClick: (id: number) => void;

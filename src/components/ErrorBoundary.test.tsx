@@ -26,23 +26,4 @@ describe('ErrorBoundary Component', () => {
     expect(screen.getByText('Test error')).toBeInTheDocument();
     expect(screen.getByRole('button', { name: /Reload/i })).toBeInTheDocument();
   });
-
-  // it('reloads the page on button click', () => {
-  //   const reloadMock = vi
-  //     .spyOn(window.location, 'reload')
-  //     .mockImplementation(() => {});
-
-  //   render(
-  //     <ErrorBoundary>
-  //       <ThrowError />
-  //     </ErrorBoundary>,
-  //   );
-
-  //   const button = screen.getByRole('button', { name: /Reload/i });
-  //   fireEvent.click(button);
-
-  //   expect(reloadMock).toHaveBeenCalledTimes(1);
-
-  //   reloadMock.mockRestore();
-  // });
 });
