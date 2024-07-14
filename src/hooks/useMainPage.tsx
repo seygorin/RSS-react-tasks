@@ -6,7 +6,7 @@ type ItemDetails = {
   id: number;
 };
 
-const useMainPageLogic = () => {
+const useMainPage = () => {
   const [searchTerm, setSearchTerm] = useLocalStorage('searchTerm', '');
   const [isInitialLoadComplete, setIsInitialLoadComplete] = useState(false);
   const [selectedItemDetails, setSelectedItemDetails] =
@@ -52,4 +52,4 @@ const useMainPageLogic = () => {
   };
 };
 
-export default useMainPageLogic;
+export default useMainPage;
