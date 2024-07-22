@@ -1,7 +1,7 @@
 import { useFetchPersonDetailsQuery } from '../store/api/personApi';
 import { useDispatch } from 'react-redux';
 import { AppDispatch } from '../store/store';
-import { setSelectedItem } from '../store/slices/selectedItemSlice';
+import { selectItem } from '../store/slices/selectedItemSlice';
 import { useEffect } from 'react';
 
 const usePersonDetails = (id: string | undefined) => {
@@ -14,7 +14,7 @@ const usePersonDetails = (id: string | undefined) => {
 
   useEffect(() => {
     if (person) {
-      dispatch(setSelectedItem(person));
+      dispatch(selectItem(person));
     }
   }, [person, dispatch]);
 

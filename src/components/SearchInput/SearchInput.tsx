@@ -1,6 +1,6 @@
 import React, { useState, useEffect, ChangeEvent, FormEvent } from 'react';
 import { useNavigate } from 'react-router-dom';
-import Button from './Button';
+import Button from '../Button/Button';
 import './SearchInput.css';
 
 interface Props {

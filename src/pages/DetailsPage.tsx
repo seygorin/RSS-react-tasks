@@ -1,10 +1,10 @@
 import React from 'react';
 import { useParams } from 'react-router-dom';
 import usePersonDetails from '../hooks/usePersonDetails';
-import Card from '../components/Card';
-import Loading from '../components/Loading';
-import ErrorMessage from '../components/ErrorMessage';
-import NoResults from '../components/NoResults';
+import Card from '../components/Card/Card';
+import Loading from '../components/Loading/Loading';
+import ErrorMessage from '../components/ErrorMessage/ErrorMessage';
+import NoResults from '../components/NoResults/NoResults';
 import './DetailsPage.css';
 
 const DetailsPage: React.FC = () => {

@@ -1,17 +1,16 @@
-// src/pages/MainPage.tsx
 import React from 'react';
 import { Outlet } from 'react-router-dom';
 import useMainPage from '../hooks/useMainPage';
-import SearchInput from '../components/SearchInput';
-import Results from '../components/Results';
-import Button from '../components/Button';
+import SearchInput from '../components/SearchInput/SearchInput';
+import Results from '../components/Result/Results';
+import Button from '../components/Button/Button';
 import './MainPage.css';
 
 const MainPage: React.FC = () => {
   const {
     searchTerm,
     isInitialLoadComplete,
-    selectedItem,
+    selectedItems,
     hasError,
     handleSearch,
     throwError,
@@ -24,13 +23,13 @@ const MainPage: React.FC = () => {
   }
 
   const handleOutsideClick = () => {
-    if (selectedItem !== null) {
+    if (Object.keys(selectedItems).length > 0) {
       closeDetails();
     }
   };
 
   const handleInsideClick = (event: React.MouseEvent) => {
-    event.stopPropagation();
+    event.stopPropagation(); // Остановить всплытие события
   };
 
   return (
@@ -47,7 +46,7 @@ const MainPage: React.FC = () => {
             <Results searchTerm={searchTerm} onItemClick={handleItemClick} />
           )}
         </div>
-        {selectedItem !== null && (
+        {Object.keys(selectedItems).length > 0 && (
           <div className="right-section" onClick={handleInsideClick}>
             <Outlet />
             <Button variant="pagination" onClick={closeDetails}>

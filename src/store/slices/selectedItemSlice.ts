@@ -1,23 +1,29 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { Person } from '../api/interfaces';
 
-export interface SelectedItemState {
-  selectedItem: Person | null;
+interface SelectedItemState {
+  selectedItems: { [id: string]: Person };
 }
 
 const initialSelectedItemState: SelectedItemState = {
-  selectedItem: null,
+  selectedItems: {},
 };
 
 const selectedItemSlice = createSlice({
   name: 'selectedItem',
   initialState: initialSelectedItemState,
   reducers: {
-    setSelectedItem: (state, action: PayloadAction<Person | null>) => {
-      state.selectedItem = action.payload;
+    selectItem: (state, action: PayloadAction<Person>) => {
+      state.selectedItems[action.payload.url] = action.payload;
+    },
+    unselectItem: (state, action: PayloadAction<string>) => {
+      delete state.selectedItems[action.payload];
+    },
+    setItems: (state, action: PayloadAction<{ [id: string]: Person }>) => {
+      state.selectedItems = action.payload;
     },
   },
 });
 
-export const { setSelectedItem } = selectedItemSlice.actions;
+export const { selectItem, unselectItem, setItems } = selectedItemSlice.actions;
 export default selectedItemSlice.reducer;
