@@ -9,14 +9,14 @@ import './DetailsPage.css';
 
 const DetailsPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
-  const { person, loading, error } = usePersonDetails(id);
+  const { person, isLoading, error } = usePersonDetails(id);
 
-  if (loading) {
+  if (isLoading) {
     return <Loading />;
   }
 
   if (error) {
-    return <ErrorMessage message={error} />;
+    return <ErrorMessage message={error.message || 'An error occurred'} />;
   }
 
   if (!person) {
