@@ -1,16 +1,20 @@
+// src/hooks/useMainPage.ts
 import { useState, useEffect } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { RootState, AppDispatch } from '../store/store';
+import { setSelectedItem } from '../store/slices/selectedItemSlice';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import useLocalStorage from '../utils/useLocalStorage';
-
-type ItemDetails = {
-  id: number;
-};
+import { Person } from '../store/api/interfaces';
+import { extractIdFromUrl } from '../utils/urlUtils';
 
 const useMainPage = () => {
   const [searchTerm, setSearchTerm] = useLocalStorage('searchTerm', '');
   const [isInitialLoadComplete, setIsInitialLoadComplete] = useState(false);
-  const [selectedItemDetails, setSelectedItemDetails] =
-    useState<ItemDetails | null>(null);
+  const selectedItem = useSelector(
+    (state: RootState) => state.selectedItem.selectedItem,
+  );
+  const dispatch = useDispatch<AppDispatch>();
   const [hasError, setHasError] = useState(false);
 
   const navigate = useNavigate();
@@ -30,20 +34,21 @@ const useMainPage = () => {
     setHasError(true);
   };
 
-  const handleItemClick = (id: number) => {
-    setSelectedItemDetails({ id });
+  const handleItemClick = (person: Person) => {
+    const id = parseInt(extractIdFromUrl(person.url), 10);
+    dispatch(setSelectedItem(person));
     navigate(`/details/${id}?page=${page}`);
   };
 
   const closeDetails = () => {
-    setSelectedItemDetails(null);
+    dispatch(setSelectedItem(null));
     navigate(`/?page=${page}`);
   };
 
   return {
     searchTerm,
     isInitialLoadComplete,
-    selectedItemDetails,
+    selectedItem,
     hasError,
     handleSearch,
     throwError,

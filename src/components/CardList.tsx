@@ -1,11 +1,11 @@
 import React from 'react';
-import { Person } from '../services/interfaces';
+import { Person } from '../store/api/interfaces';
 import Card from './Card';
 import NoResults from './NoResults';
 
 interface CardListProps {
   people: Person[];
-  onItemClick: (id: number) => void;
+  onItemClick: (person: Person) => void;
 }
 
 const CardList: React.FC<CardListProps> = ({ people, onItemClick }) => {
@@ -16,7 +16,11 @@ const CardList: React.FC<CardListProps> = ({ people, onItemClick }) => {
   return (
     <ul className="results-list">
       {people.map((person) => (
-        <Card key={person.name} person={person} onClick={onItemClick} />
+        <Card
+          key={person.name}
+          person={person}
+          onClick={() => onItemClick(person)}
+        />
       ))}
     </ul>
   );

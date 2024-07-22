@@ -1,68 +1,61 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { fetchPeople } from '../services/api';
-import { Person } from '../services/interfaces';
+import { useSelector, useDispatch } from 'react-redux';
+import { RootState } from '../store/store';
+import { useFetchPeopleQuery } from '../store/api/personApi';
+import { setPage } from '../store/slices/pageSlice';
+
 import CardList from './CardList';
 import Pagination from './Pagination';
 import Loading from './Loading';
 import ErrorMessage from './ErrorMessage';
 import NoResults from './NoResults';
 import './Results.css';
+import { Person } from '../store/api/interfaces';
 
 interface Props {
   searchTerm: string;
-  onItemClick: (id: number) => void;
+  onItemClick: (person: Person) => void;
 }
 
 const Results: React.FC<Props> = ({ searchTerm, onItemClick }) => {
-  const [people, setPeople] = useState<Person[]>([]);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [totalPages, setTotalPages] = useState(1);
-
+  const dispatch = useDispatch();
+  const currentPage = useSelector((state: RootState) => state.page.currentPage);
   const [searchParams, setSearchParams] = useSearchParams();
-  const currentPage = parseInt(searchParams.get('page') || '1', 10);
+
+  const { data, error, isLoading } = useFetchPeopleQuery({
+    searchTerm,
+    page: currentPage,
+  });
 
   useEffect(() => {
-    loadPeople();
-  }, [searchTerm, currentPage]);
-
-  const loadPeople = async () => {
-    setLoading(true);
-    setError(null);
-
-    try {
-      const response = await fetchPeople(searchTerm, currentPage);
-      setPeople(response.data.results);
-      setTotalPages(Math.ceil(response.data.count / 10));
-    } catch (error) {
-      console.error(error);
-      setError('Failed to fetch data');
-    } finally {
-      setLoading(false);
+    const pageParam = parseInt(searchParams.get('page') || '1', 10);
+    if (pageParam !== currentPage) {
+      dispatch(setPage(pageParam));
     }
-  };
+  }, [searchParams, currentPage, dispatch]);
 
   const handlePageChange = (newPage: number) => {
     setSearchParams({ page: newPage.toString() });
+    dispatch(setPage(newPage));
   };
 
-  if (loading) {
+  if (isLoading) {
     return <Loading />;
   }
 
   if (error) {
-    return <ErrorMessage message={error} />;
+    return <ErrorMessage message="Failed to fetch data" />;
   }
 
   return (
     <div className="results-container">
-      {people.length > 0 ? (
+      {data && data.results.length > 0 ? (
         <>
-          <CardList people={people} onItemClick={onItemClick} />
+          <CardList people={data.results} onItemClick={onItemClick} />
           <Pagination
             currentPage={currentPage}
-            totalPages={totalPages}
+            totalPages={Math.ceil(data.count / 10)}
             onPageChange={handlePageChange}
           />
         </>

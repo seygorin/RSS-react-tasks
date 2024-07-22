@@ -1,7 +1,7 @@
 import { render, screen, fireEvent } from '@testing-library/react';
 import { describe, it, expect, vi } from 'vitest';
 import Card from './Card';
-import { Person } from '../services/interfaces';
+import { Person } from '../store/api/interfaces';
 
 describe('Card', () => {
   const mockPerson: Person = {

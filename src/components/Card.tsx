@@ -1,23 +1,16 @@
 import React from 'react';
-import { Person } from '../services/interfaces';
+import { Person } from '../store/api/interfaces';
 
 import './Card.css';
+
 interface CardProps {
   person: Person;
-  onClick: (id: number) => void;
+  onClick: (person: Person) => void;
 }
 
-const extractIdFromUrl = (url: string): string => {
-  const idPattern = /\/([0-9]+)\/$/;
-  const match = url.match(idPattern);
-  return match ? match[1] : '';
-};
-
 const Card: React.FC<CardProps> = ({ person, onClick }) => {
-  const id = parseInt(extractIdFromUrl(person.url), 10);
-
   return (
-    <li className="result-item" onClick={() => onClick(id)}>
+    <li className="result-item" onClick={() => onClick(person)}>
       <h3>{person.name}</h3>
       <div className="attributes-grid">
         <p>

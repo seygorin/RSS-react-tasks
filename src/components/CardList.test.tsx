@@ -1,7 +1,7 @@
 import { render, screen } from '@testing-library/react';
 import { describe, it, expect, vi } from 'vitest';
 import CardList from './CardList';
-import { Person } from '../services/interfaces';
+import { Person } from '../store/api/interfaces';
 
 describe('CardList', () => {
   const mockPeople: Person[] = [

@@ -1,6 +1,7 @@
+// src/pages/MainPage.tsx
 import React from 'react';
 import { Outlet } from 'react-router-dom';
-import useMainPageLogic from '../hooks/useMainPage';
+import useMainPage from '../hooks/useMainPage';
 import SearchInput from '../components/SearchInput';
 import Results from '../components/Results';
 import Button from '../components/Button';
@@ -10,17 +11,27 @@ const MainPage: React.FC = () => {
   const {
     searchTerm,
     isInitialLoadComplete,
-    selectedItemDetails,
+    selectedItem,
     hasError,
     handleSearch,
     throwError,
     handleItemClick,
     closeDetails,
-  } = useMainPageLogic();
+  } = useMainPage();
 
   if (hasError) {
     throw new Error('Test error');
   }
+
+  const handleOutsideClick = () => {
+    if (selectedItem !== null) {
+      closeDetails();
+    }
+  };
+
+  const handleInsideClick = (event: React.MouseEvent) => {
+    event.stopPropagation();
+  };
 
   return (
     <main className="main-page">
@@ -30,17 +41,14 @@ const MainPage: React.FC = () => {
       <div className="top-section">
         <SearchInput onSearch={handleSearch} initialSearchTerm={searchTerm} />
       </div>
-      <div
-        className="content-section"
-        onClick={() => selectedItemDetails && closeDetails()}
-      >
+      <div className="content-section" onClick={handleOutsideClick}>
         <div className="left-section">
           {isInitialLoadComplete && (
             <Results searchTerm={searchTerm} onItemClick={handleItemClick} />
           )}
         </div>
-        {selectedItemDetails && (
-          <div className="right-section">
+        {selectedItem !== null && (
+          <div className="right-section" onClick={handleInsideClick}>
             <Outlet />
             <Button variant="pagination" onClick={closeDetails}>
               Close

@@ -12,10 +12,15 @@ const Pagination: React.FC<PaginationProps> = ({
   totalPages,
   onPageChange,
 }) => {
+  const handlePageChange = (event: React.MouseEvent, newPage: number) => {
+    event.stopPropagation();
+    onPageChange(newPage);
+  };
+
   return (
     <div className="pagination">
       <Button
-        onClick={() => onPageChange(currentPage - 1)}
+        onClick={(event) => handlePageChange(event, currentPage - 1)}
         disabled={currentPage === 1}
         variant="pagination"
       >
@@ -25,7 +30,7 @@ const Pagination: React.FC<PaginationProps> = ({
         Page {currentPage} of {totalPages}
       </span>
       <Button
-        onClick={() => onPageChange(currentPage + 1)}
+        onClick={(event) => handlePageChange(event, currentPage + 1)}
         disabled={currentPage === totalPages}
         variant="pagination"
       >
