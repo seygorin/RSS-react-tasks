@@ -1,17 +1,23 @@
-import axios, { AxiosError } from 'axios';
+import axios, { AxiosError, AxiosRequestConfig } from 'axios';
+import { BaseQueryFn } from '@reduxjs/toolkit/query/react';
 
-export interface AxiosBaseQueryArgs {
+export interface AxiosBaseQueryArgs extends AxiosRequestConfig {
   url: string;
-  method: 'get' | 'post' | 'put' | 'delete';
-  data?: object;
-  params?: Record<string, string | number>;
 }
 
 const axiosBaseQuery =
-  ({ baseUrl }: { baseUrl: string }) =>
-  async ({ url, method, data, params }: AxiosBaseQueryArgs) => {
+  (
+    { baseUrl }: { baseUrl: string } = { baseUrl: '' },
+  ): BaseQueryFn<AxiosBaseQueryArgs, unknown, unknown> =>
+  async ({ url, method, data, params, ...rest }) => {
     try {
-      const result = await axios({ url: baseUrl + url, method, data, params });
+      const result = await axios({
+        url: baseUrl + url,
+        method,
+        data,
+        params,
+        ...rest,
+      });
       return { data: result.data };
     } catch (axiosError) {
       const err = axiosError as AxiosError;

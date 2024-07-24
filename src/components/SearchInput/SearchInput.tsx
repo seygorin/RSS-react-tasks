@@ -31,6 +31,7 @@ const SearchInput: React.FC<Props> = ({ onSearch, initialSearchTerm }) => {
       navigate(`/`);
     }
   };
+
   return (
     <form className="search-form" onSubmit={handleSubmit}>
       <input
