@@ -1,3 +1,5 @@
+import React from 'react';
+import PropTypes from 'prop-types';
 import { render, screen } from '@testing-library/react';
 import { vi, describe, it, expect, beforeEach } from 'vitest';
 import usePersonDetails from './usePersonDetails';
@@ -17,7 +19,7 @@ vi.mock('react-redux', () => ({
   useDispatch: vi.fn(),
 }));
 
-const TestComponent = ({ id }) => {
+const TestComponent = (id: string) => {
   const { person, isLoading, error } = usePersonDetails(id);
 
   return (
@@ -27,6 +29,10 @@ const TestComponent = ({ id }) => {
       {person && <p>{person.name}</p>}
     </div>
   );
+};
+
+TestComponent.propTypes = {
+  id: PropTypes.string.isRequired,
 };
 
 describe('usePersonDetails', () => {
