@@ -1,7 +1,24 @@
+import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
-import { describe, it, expect, vi } from 'vitest';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
+import configureStore from 'redux-mock-store';
+import { Provider } from 'react-redux';
+import { useNavigate, useSearchParams, MemoryRouter } from 'react-router-dom';
 import Card from './Card';
 import { Person } from '../../store/api/interfaces';
+import { selectItem, unselectItem } from '../../store/slices/selectedItemSlice';
+import { RootState } from '../../store/store';
+
+vi.mock('react-router-dom', async () => {
+  const actual = await vi.importActual('react-router-dom');
+  return {
+    ...actual,
+    useNavigate: vi.fn(),
+    useSearchParams: vi.fn(),
+  };
+});
+
+const mockStore = configureStore([]);
 
 describe('Card', () => {
   const mockPerson: Person = {
@@ -16,10 +33,30 @@ describe('Card', () => {
     url: '/person/1/',
   };
 
-  const mockOnClick = vi.fn();
+  const renderWithProviders = (
+    component: React.ReactNode,
+    initialState: Partial<RootState> = {},
+  ) => {
+    const store = mockStore(initialState);
+    return render(
+      <Provider store={store}>
+        <MemoryRouter>{component}</MemoryRouter>
+      </Provider>,
+    );
+  };
+
+  beforeEach(() => {
+    vi.mocked(useNavigate).mockReturnValue(vi.fn());
+    vi.mocked(useSearchParams).mockReturnValue([
+      new URLSearchParams(),
+      vi.fn(),
+    ]);
+  });
 
   it('renders relevant card data', () => {
-    render(<Card person={mockPerson} onClick={mockOnClick} />);
+    renderWithProviders(<Card person={mockPerson} />, {
+      selectedItem: { selectedItems: {} },
+    });
 
     expect(screen.getByText(mockPerson.name)).toBeInTheDocument();
     expect(screen.getByText(/height/i)).toBeInTheDocument();
@@ -38,26 +75,39 @@ describe('Card', () => {
     expect(screen.getByText(/male/i)).toBeInTheDocument();
   });
 
-  it('calls onClick with the correct id when clicked', () => {
-    render(<Card person={mockPerson} onClick={mockOnClick} />);
+  it('dispatches selectItem action when checkbox is checked', () => {
+    const store = mockStore({ selectedItem: { selectedItems: {} } });
+    render(
+      <Provider store={store}>
+        <MemoryRouter>
+          <Card person={mockPerson} />
+        </MemoryRouter>
+      </Provider>,
+    );
 
-    const card = screen.getByRole('listitem');
-    fireEvent.click(card);
+    const checkbox = screen.getByRole('checkbox');
+    fireEvent.click(checkbox);
 
-    expect(mockOnClick).toHaveBeenCalledWith(1);
+    const actions = store.getActions();
+    expect(actions).toContainEqual(selectItem(mockPerson));
   });
 
-  it('triggers an additional API call to fetch detailed information on click', async () => {
-    const mockFetchDetailedInformation = vi.fn().mockResolvedValue({
-      data: mockPerson,
+  it('dispatches unselectItem action when checkbox is unchecked', () => {
+    const store = mockStore({
+      selectedItem: { selectedItems: { '/person/1/': mockPerson } },
     });
+    render(
+      <Provider store={store}>
+        <MemoryRouter>
+          <Card person={mockPerson} />
+        </MemoryRouter>
+      </Provider>,
+    );
 
-    render(<Card person={mockPerson} onClick={mockFetchDetailedInformation} />);
+    const checkbox = screen.getByRole('checkbox');
+    fireEvent.click(checkbox);
 
-    const card = screen.getByRole('listitem');
-    fireEvent.click(card);
-
-    expect(mockFetchDetailedInformation).toHaveBeenCalledWith(1);
-    await expect(mockFetchDetailedInformation).toHaveBeenCalledTimes(1);
+    const actions = store.getActions();
+    expect(actions).toContainEqual(unselectItem(mockPerson.url));
   });
 });

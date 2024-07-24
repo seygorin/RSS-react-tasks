@@ -1,6 +1,6 @@
 import React from 'react';
 import { expect, describe, it, vi, beforeEach } from 'vitest';
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import { render, screen, waitFor } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import { Provider } from 'react-redux';
 import { configureStore } from '@reduxjs/toolkit';
@@ -10,28 +10,36 @@ import pageReducer from '../../store/slices/pageSlice';
 import selectedItemReducer from '../../store/slices/selectedItemSlice';
 
 const mockPeople = [
-  { name: 'John Doe', age: 30, job: 'Developer', url: '/1/' },
-  { name: 'Jane Smith', age: 25, job: 'Designer', url: '/2/' },
+  {
+    name: 'Luke Skywalker',
+    height: '172',
+    mass: '77',
+    url: 'http://swapi.dev/api/people/1/',
+  },
+  {
+    name: 'C-3PO',
+    height: '167',
+    mass: '75',
+    url: 'http://swapi.dev/api/people/2/',
+  },
 ];
 
+const mockUseFetchPeopleQuery = vi.fn();
+
 vi.mock('../../store/api/personApi', () => ({
-  useFetchPeopleQuery: () => ({
-    data: { results: mockPeople, count: 2 },
-    error: null,
-    isLoading: false,
-  }),
+  useFetchPeopleQuery: () => mockUseFetchPeopleQuery(),
 }));
 
 vi.mock('react-router-dom', async () => {
   const actual = await vi.importActual('react-router-dom');
   return {
     ...actual,
-    useSearchParams: () => [new URLSearchParams(), vi.fn()],
+    useSearchParams: () => [new URLSearchParams('page=1'), vi.fn()],
   };
 });
 
 const mockProps = {
-  searchTerm: 'Developer',
+  searchTerm: 'Luke',
 };
 
 describe('Results Component', () => {
@@ -39,7 +47,7 @@ describe('Results Component', () => {
     vi.clearAllMocks();
   });
 
-  const renderWithRedux = (ui: React.ReactNode) => {
+  const renderWithRedux = (ui: React.ReactNode, initialState = {}) => {
     const store = configureStore({
       reducer: {
         people: peopleReducer,
@@ -47,9 +55,10 @@ describe('Results Component', () => {
         selectedItem: selectedItemReducer,
       },
       preloadedState: {
-        people: { currentPageData: mockPeople },
+        people: { currentPageData: [] },
         page: { currentPage: 1 },
         selectedItem: { selectedItems: {} },
+        ...initialState,
       },
     });
 
@@ -63,45 +72,42 @@ describe('Results Component', () => {
     };
   };
 
-  it('renders people', async () => {
-    renderWithRedux(<Results {...mockProps} />);
-
-    const items = await waitFor(() =>
-      screen.getAllByRole('heading', { level: 3 }),
-    );
-    expect(items).toHaveLength(2);
-    expect(screen.getByText('John Doe')).toBeInTheDocument();
-    expect(screen.getByText('Jane Smith')).toBeInTheDocument();
-  });
-
-  it('updates Redux store when a person is clicked', async () => {
-    const { store } = renderWithRedux(<Results {...mockProps} />);
-
-    const items = await waitFor(() =>
-      screen.getAllByRole('heading', { level: 3 }),
-    );
-    fireEvent.click(items[0]);
-
-    await waitFor(() => {
-      const state = store.getState();
-
-      expect(state.selectedItem).not.toEqual({ selectedItems: {} });
+  it('renders loading state', () => {
+    mockUseFetchPeopleQuery.mockReturnValue({
+      isLoading: true,
+      error: null,
+      data: null,
     });
 
-    console.log('Current Redux State:', store.getState());
+    renderWithRedux(<Results {...mockProps} />);
+    expect(screen.getByText(/loading/i)).toBeInTheDocument();
   });
 
-  it('updates current page when pagination is clicked', async () => {
-    const { store } = renderWithRedux(<Results {...mockProps} />);
+  it('renders error state', () => {
+    mockUseFetchPeopleQuery.mockReturnValue({
+      isLoading: false,
+      error: { message: 'An error occurred' },
+      data: null,
+    });
 
-    const nextPageButton = await waitFor(() =>
-      screen.getByRole('button', { name: /next/i }),
-    );
-    fireEvent.click(nextPageButton);
+    renderWithRedux(<Results {...mockProps} />);
+    expect(screen.getByText(/failed to fetch data/i)).toBeInTheDocument();
+  });
+
+  it('renders people when data is available', async () => {
+    mockUseFetchPeopleQuery.mockReturnValue({
+      isLoading: false,
+      error: null,
+      data: { results: mockPeople, count: 2 },
+    });
+
+    renderWithRedux(<Results {...mockProps} />, {
+      people: { currentPageData: mockPeople },
+    });
 
     await waitFor(() => {
-      const pageState = store.getState().page;
-      expect(pageState.currentPage).toBe(1);
+      expect(screen.getByText('Luke Skywalker')).toBeInTheDocument();
+      expect(screen.getByText('C-3PO')).toBeInTheDocument();
     });
   });
 });
