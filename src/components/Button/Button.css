@@ -5,8 +5,8 @@
   font-size: 1em;
   font-weight: 500;
   font-family: inherit;
-  color: white;
-  background-color: white;
+  color: var(--button-color);
+  background-color: var(--button-background);
   cursor: pointer;
 }
 
@@ -21,24 +21,54 @@
 }
 
 .pagination-button {
-  background-color: #c95add;
+  background-color: var(--pagination-button-bg);
 }
 
 .pagination-button:hover {
-  background-color: #550a68;
+  background-color: var(--pagination-button-hover-bg);
 }
 
 .search-button {
-  background-color: #ed82f6;
+  background-color: var(--search-button-bg);
 }
 
 .search-button:hover {
-  background-color: #bb00b3;
+  background-color: var(--search-button-hover-bg);
 }
 
 .error-boundary-button {
-  color: rgb(193, 87, 87);
-  position: absolute;
-  top: 10px;
-  left: 10px;
+  color: var(--error-boundary-button-color);
+}
+
+.toggle-theme-button {
+  background-color: var(--toggle-theme-button-bg);
+}
+
+.toggle-theme-button:hover,
+.error-boundary-button:hover {
+  background-color: var(--button-hover-background);
+}
+
+[data-theme='light'] {
+  --button-background: white;
+  --button-color: white;
+  --button-hover-background: #ecb6b6;
+  --pagination-button-bg: #c95add;
+  --pagination-button-hover-bg: #550a68;
+  --search-button-bg: #ed82f6;
+  --search-button-hover-bg: #bb00b3;
+  --error-boundary-button-color: rgb(255, 80, 80);
+  --toggle-theme-button-bg: rgb(244, 174, 174);
+}
+
+[data-theme='dark'] {
+  --button-background: white;
+  --button-color: white;
+  --button-hover-background: #f29e9e;
+  --pagination-button-bg: #c95add89;
+  --pagination-button-hover-bg: #550a687c;
+  --search-button-bg: #ec82f66d;
+  --search-button-hover-bg: #bb00b26e;
+  --error-boundary-button-color: rgb(193, 87, 87);
+  --toggle-theme-button-bg: rgba(244, 174, 174, 0.462);
 }

@@ -1,5 +1,5 @@
 .results-container {
-	margin: 20px;
+  margin: 20px;
 }
 
 .results-list {
@@ -11,32 +11,7 @@
   justify-content: center;
 }
 
-.result-item {
-  padding: 20px;
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  width: 400px;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-  background-color: #f9f9f9;
-}
 
-.result-item h3 {
-  margin: 0 0 10px;
-  text-align: center;
-}
-
-.attributes-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 10px;
-}
-
-.attributes-grid p {
-  background-color: #cdd3ee;
-  padding: 5px;
-  border-radius: 4px;
-  margin: 0;
-}
 
 .pagination {
   display: flex;
