@@ -1,5 +1,5 @@
-import React from 'react';
-import { Person } from '../../store/api/interfaces';
+import React, { useEffect } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import CardList from '../CardList/CardList';
 import Pagination from '../Pagination/Pagination';
 import Loading from '../Loading/Loading';
@@ -9,36 +9,41 @@ import { useFetchPeopleQuery } from '../../store/api/personApi';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from '../../store/store';
 import { setPage } from '../../store/slices/pageSlice';
-import { selectItem, unselectItem } from '../../store/slices/selectedItemSlice';
+import { setPeople } from '../../store/slices/peopleSlice';
 import './Results.css';
 
 interface Props {
   searchTerm: string;
-  onItemClick: (person: Person) => void;
 }
 
-const Results: React.FC<Props> = ({ searchTerm, onItemClick }) => {
+const Results: React.FC<Props> = ({ searchTerm }) => {
   const dispatch = useDispatch();
-  const selectedItems = useSelector(
-    (state: RootState) => state.selectedItem.selectedItems,
+
+  const [searchParams, setSearchParams] = useSearchParams();
+  const currentPage = Number(searchParams.get('page')) || 1;
+  const peopleData = useSelector(
+    (state: RootState) => state.people.currentPageData,
   );
-  const currentPage = useSelector((state: RootState) => state.page.currentPage);
   const { data, error, isLoading } = useFetchPeopleQuery({
     searchTerm,
     page: currentPage,
   });
 
+  useEffect(() => {
+    dispatch(setPage(currentPage));
+  }, [currentPage, dispatch]);
+
+  useEffect(() => {
+    if (data && data.results) {
+      dispatch(setPeople(data.results));
+    }
+  }, [data, dispatch]);
+
   const handlePageChange = (newPage: number) => {
     dispatch(setPage(newPage));
+    setSearchParams({ page: newPage.toString() });
   };
 
-  const handleCheckboxChange = (person: Person, checked: boolean) => {
-    if (checked) {
-      dispatch(selectItem(person));
-    } else {
-      dispatch(unselectItem(person.url));
-    }
-  };
   if (isLoading) {
     return <Loading />;
   }
@@ -49,17 +54,12 @@ const Results: React.FC<Props> = ({ searchTerm, onItemClick }) => {
 
   return (
     <div className="results-container">
-      {data && data.results.length > 0 ? (
+      {peopleData && peopleData.length > 0 ? (
         <>
-          <CardList
-            people={data.results}
-            onItemClick={onItemClick}
-            onCheckboxChange={handleCheckboxChange}
-            selectedItems={selectedItems}
-          />
+          <CardList people={peopleData} />
           <Pagination
             currentPage={currentPage}
-            totalPages={Math.ceil(data.count / 10)}
+            totalPages={Math.ceil((data?.count || 0) / 10)}
             onPageChange={handlePageChange}
           />
         </>

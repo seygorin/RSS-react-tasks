@@ -5,17 +5,9 @@ import NoResults from '../NoResults/NoResults';
 
 interface CardListProps {
   people: Person[];
-  onItemClick: (person: Person) => void;
-  onCheckboxChange: (person: Person, checked: boolean) => void;
-  selectedItems: { [id: string]: Person };
 }
 
-const CardList: React.FC<CardListProps> = ({
-  people,
-  onItemClick,
-  onCheckboxChange,
-  selectedItems,
-}) => {
+const CardList: React.FC<CardListProps> = ({ people }) => {
   if (people.length === 0) {
     return <NoResults />;
   }
@@ -23,13 +15,7 @@ const CardList: React.FC<CardListProps> = ({
   return (
     <ul className="results-list">
       {people.map((person) => (
-        <Card
-          key={person.url}
-          person={person}
-          isSelected={!!selectedItems[person.url]}
-          onClick={onItemClick}
-          onCheckboxChange={onCheckboxChange}
-        />
+        <Card key={person.url} person={person} />
       ))}
     </ul>
   );

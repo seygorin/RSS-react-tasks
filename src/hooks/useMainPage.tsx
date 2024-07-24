@@ -1,14 +1,9 @@
 import { useState, useEffect } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-import { RootState, AppDispatch } from '../store/store';
-import {
-  setItems,
-  selectItem,
-  unselectItem,
-} from '../store/slices/selectedItemSlice';
+import { useSelector } from 'react-redux';
+import { RootState } from '../store/store';
+
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import useLocalStorage from '../utils/useLocalStorage';
-import { Person } from '../store/api/interfaces';
 
 const useMainPage = () => {
   const [searchTerm, setSearchTerm] = useLocalStorage('searchTerm', '');
@@ -16,11 +11,10 @@ const useMainPage = () => {
   const selectedItems = useSelector(
     (state: RootState) => state.selectedItem.selectedItems,
   );
-  const dispatch = useDispatch<AppDispatch>();
-  const [hasError, setHasError] = useState(false);
 
+  const [hasError, setHasError] = useState(false);
   const navigate = useNavigate();
-  const [searchParams, setSearchParams] = useSearchParams();
+  const [searchParams] = useSearchParams();
   const page = searchParams.get('page') || '1';
 
   useEffect(() => {
@@ -29,24 +23,13 @@ const useMainPage = () => {
 
   const handleSearch = (searchTerm: string) => {
     setSearchTerm(searchTerm);
-    setSearchParams({ page: '1' });
   };
 
   const throwError = () => {
     setHasError(true);
   };
 
-  const handleItemClick = (person: Person) => {
-    if (selectedItems[person.url]) {
-      dispatch(unselectItem(person.url));
-    } else {
-      dispatch(selectItem(person));
-    }
-    navigate(`/details/${person.url.split('/')[5]}?page=${page}`);
-  };
-
   const closeDetails = () => {
-    dispatch(setItems({}));
     navigate(`/?page=${page}`);
   };
 
@@ -57,7 +40,6 @@ const useMainPage = () => {
     hasError,
     handleSearch,
     throwError,
-    handleItemClick,
     closeDetails,
   };
 };
