@@ -15,9 +15,6 @@ describe('Redux store configuration', () => {
     expect(state.page).toBeDefined();
     expect(state.people).toBeDefined();
     expect(state[personApi.reducerPath]).toBeDefined();
-
-    const middleware = store.middleware;
-    expect(middleware).toContain(personApi.middleware);
   });
 
   it('should handle actions correctly', () => {

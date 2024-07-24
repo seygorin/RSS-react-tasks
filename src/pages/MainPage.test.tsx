@@ -91,11 +91,4 @@ describe('MainPage', () => {
 
     expect(() => renderWithRouter(<MainPage />)).toThrow('Test error');
   });
-
-  it('should log search params when they change', () => {
-    const consoleSpy = vi.spyOn(console, 'log');
-    renderWithRouter(<MainPage />, { route: '/?search=test' });
-
-    expect(consoleSpy).toHaveBeenCalledWith('Search Params:', 'test');
-  });
 });

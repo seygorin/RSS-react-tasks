@@ -30,7 +30,7 @@ describe('Card', () => {
     eye_color: 'blue',
     birth_year: '1990',
     gender: 'male',
-    url: '/person/1/',
+    url: 'https://swapi.dev/api/people/1/',
   };
 
   const renderWithProviders = (
@@ -94,7 +94,9 @@ describe('Card', () => {
 
   it('dispatches unselectItem action when checkbox is unchecked', () => {
     const store = mockStore({
-      selectedItem: { selectedItems: { '/person/1/': mockPerson } },
+      selectedItem: {
+        selectedItems: { 'https://swapi.dev/api/people/1/': mockPerson },
+      },
     });
     render(
       <Provider store={store}>
@@ -109,5 +111,21 @@ describe('Card', () => {
 
     const actions = store.getActions();
     expect(actions).toContainEqual(unselectItem(mockPerson.url));
+  });
+
+  it('navigates to details page on card click', () => {
+    const navigate = vi.mocked(useNavigate)();
+    renderWithProviders(<Card person={mockPerson} />, {
+      selectedItem: { selectedItems: {} },
+    });
+
+    const cardElement = screen.getByText(mockPerson.name).closest('div');
+    if (cardElement) {
+      fireEvent.click(cardElement);
+    } else {
+      throw new Error('Card element is not found');
+    }
+
+    expect(navigate).toHaveBeenCalledWith('/details/1?page=1');
   });
 });

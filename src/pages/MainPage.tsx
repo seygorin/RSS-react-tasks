@@ -23,10 +23,6 @@ const MainPage: React.FC = () => {
     document.documentElement.setAttribute('data-theme', theme);
   }, [theme]);
 
-  useEffect(() => {
-    console.log('Search Params:', searchParams.get('search'));
-  }, [searchParams]);
-
   if (hasError) {
     throw new Error('Test error');
   }
