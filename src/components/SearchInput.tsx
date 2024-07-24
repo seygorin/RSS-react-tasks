@@ -1,4 +1,5 @@
-import { Component, ChangeEvent, FormEvent } from 'react';
+import React, { useState, useEffect, ChangeEvent, FormEvent } from 'react';
+import { useNavigate } from 'react-router-dom';
 import Button from './Button';
 import './SearchInput.css';
 
@@ -7,46 +8,42 @@ interface Props {
   initialSearchTerm: string;
 }
 
-interface State {
-  searchTerm: string;
-}
+const SearchInput: React.FC<Props> = ({ onSearch, initialSearchTerm }) => {
+  const [searchTerm, setSearchTerm] = useState(initialSearchTerm);
+  const navigate = useNavigate();
 
-class SearchInput extends Component<Props, State> {
-  state: State = {
-    searchTerm: this.props.initialSearchTerm,
+  useEffect(() => {
+    setSearchTerm(initialSearchTerm);
+  }, [initialSearchTerm]);
+
+  const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
+    setSearchTerm(event.target.value);
   };
 
-  componentDidUpdate(prevProps: Props) {
-    if (prevProps.initialSearchTerm !== this.props.initialSearchTerm) {
-      this.setState({ searchTerm: this.props.initialSearchTerm });
-    }
-  }
-
-  handleChange = (event: ChangeEvent<HTMLInputElement>) => {
-    this.setState({ searchTerm: event.target.value });
-  };
-
-  handleSubmit = (event: FormEvent) => {
+  const handleSubmit = (event: FormEvent) => {
     event.preventDefault();
-    const trimmedSearchTerm = this.state.searchTerm.trim();
-    this.props.onSearch(trimmedSearchTerm);
-  };
+    const trimmedSearchTerm = searchTerm.trim();
+    onSearch(trimmedSearchTerm);
 
-  render() {
-    return (
-      <form className="search-form" onSubmit={this.handleSubmit}>
-        <input
-          type="text"
-          className="search-input"
-          value={this.state.searchTerm}
-          onChange={this.handleChange}
-        />
-        <Button type="submit" variant="search">
-          Search
-        </Button>
-      </form>
-    );
-  }
-}
+    if (trimmedSearchTerm) {
+      navigate(`/?search=${trimmedSearchTerm}`);
+    } else {
+      navigate(`/`);
+    }
+  };
+  return (
+    <form className="search-form" onSubmit={handleSubmit}>
+      <input
+        type="text"
+        className="search-input"
+        value={searchTerm}
+        onChange={handleChange}
+      />
+      <Button type="submit" variant="search">
+        Search
+      </Button>
+    </form>
+  );
+};
 
 export default SearchInput;

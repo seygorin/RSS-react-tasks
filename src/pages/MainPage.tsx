@@ -1,52 +1,55 @@
-import { Component } from 'react';
+import React from 'react';
+import { Outlet } from 'react-router-dom';
+import useMainPageLogic from '../hooks/useMainPage';
 import SearchInput from '../components/SearchInput';
 import Results from '../components/Results';
 import Button from '../components/Button';
 import './MainPage.css';
 
-class MainPage extends Component {
-  state = {
-    searchTerm: '',
-    isInitialLoadComplete: false,
-    hasError: false,
-  };
+const MainPage: React.FC = () => {
+  const {
+    searchTerm,
+    isInitialLoadComplete,
+    selectedItemDetails,
+    hasError,
+    handleSearch,
+    throwError,
+    handleItemClick,
+    closeDetails,
+  } = useMainPageLogic();
 
-  componentDidMount() {
-    const savedSearchTerm = localStorage.getItem('searchTerm') || '';
-    this.setState({ searchTerm: savedSearchTerm, isInitialLoadComplete: true });
+  if (hasError) {
+    throw new Error('Test error');
   }
 
-  handleSearch = (searchTerm: string) => {
-    localStorage.setItem('searchTerm', searchTerm);
-    this.setState({ searchTerm });
-  };
-
-  throwError = (): void => {
-    this.setState({ hasError: true });
-  };
-
-  render() {
-    const { searchTerm, isInitialLoadComplete } = this.state;
-    if (this.state.hasError) {
-      throw new Error('Test error');
-    }
-    return (
-      <main className="main-page">
-        <Button variant="errorBoundary" onClick={this.throwError}>
-          Throw Error
-        </Button>
-        <div className="top-section">
-          <SearchInput
-            onSearch={this.handleSearch}
-            initialSearchTerm={searchTerm}
-          />
+  return (
+    <main className="main-page">
+      <Button variant="errorBoundary" onClick={throwError}>
+        Throw Error
+      </Button>
+      <div className="top-section">
+        <SearchInput onSearch={handleSearch} initialSearchTerm={searchTerm} />
+      </div>
+      <div
+        className="content-section"
+        onClick={() => selectedItemDetails && closeDetails()}
+      >
+        <div className="left-section">
+          {isInitialLoadComplete && (
+            <Results searchTerm={searchTerm} onItemClick={handleItemClick} />
+          )}
         </div>
-        <div className="bottom-section">
-          {isInitialLoadComplete && <Results searchTerm={searchTerm} />}
-        </div>
-      </main>
-    );
-  }
-}
+        {selectedItemDetails && (
+          <div className="right-section">
+            <Outlet />
+            <Button variant="pagination" onClick={closeDetails}>
+              Close
+            </Button>
+          </div>
+        )}
+      </div>
+    </main>
+  );
+};
 
 export default MainPage;

@@ -1,3 +1,7 @@
+.results-container {
+	margin-top: 20px;
+}
+
 .results-list {
   list-style-type: none;
   padding: 0;
@@ -14,13 +18,6 @@
   width: 400px;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
   background-color: #f9f9f9;
-}
-
-.loading {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 50vh;
 }
 
 .result-item h3 {
