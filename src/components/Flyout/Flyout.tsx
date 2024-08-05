@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../store/store';
 import { unselectAllItems } from '../../store/slices/selectedItemSlice';
 import Button from '../Button/Button';
-import './Flyout.css';
+import styles from './Flyout.module.css';
 
 const Flyout: React.FC = () => {
   const dispatch = useDispatch();
@@ -57,7 +57,7 @@ const Flyout: React.FC = () => {
   if (selectedCount === 0) return null;
 
   return (
-    <div className="flyout">
+    <div className={styles['flyout']}>
       <p>{selectedCount} items are selected</p>
       <Button variant="search" onClick={handleUnselectAll}>
         Unselect all

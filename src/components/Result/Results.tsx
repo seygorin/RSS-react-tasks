@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import { useRouter } from 'next/router';
 import CardList from '../CardList/CardList';
 import Pagination from '../Pagination/Pagination';
 import Loading from '../Loading/Loading';
@@ -10,7 +10,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from '../../store/store';
 import { setPage } from '../../store/slices/pageSlice';
 import { setPeople } from '../../store/slices/peopleSlice';
-import './Results.css';
+import styles from './Results.module.css';
 
 interface Props {
   searchTerm: string;
@@ -18,9 +18,8 @@ interface Props {
 
 const Results: React.FC<Props> = ({ searchTerm }) => {
   const dispatch = useDispatch();
-
-  const [searchParams, setSearchParams] = useSearchParams();
-  const currentPage = Number(searchParams.get('page')) || 1;
+  const router = useRouter();
+  const currentPage = Number(router.query.page) || 1;
   const peopleData = useSelector(
     (state: RootState) => state.people.currentPageData,
   );
@@ -41,7 +40,7 @@ const Results: React.FC<Props> = ({ searchTerm }) => {
 
   const handlePageChange = (newPage: number) => {
     dispatch(setPage(newPage));
-    setSearchParams({ page: newPage.toString() });
+    router.push({ query: { ...router.query, page: newPage.toString() } });
   };
 
   if (isLoading) {
@@ -51,9 +50,8 @@ const Results: React.FC<Props> = ({ searchTerm }) => {
   if (error) {
     return <ErrorMessage message="Failed to fetch data" />;
   }
-
   return (
-    <div className="results-container">
+    <div className={styles['results-container']}>
       {peopleData && peopleData.length > 0 ? (
         <>
           <CardList people={peopleData} />

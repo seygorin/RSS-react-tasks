@@ -1,10 +1,11 @@
 import React, { ChangeEvent } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useRouter } from 'next/router';
 import { Person } from '../../store/api/interfaces';
 import { RootState } from '../../store/store';
 import { selectItem, unselectItem } from '../../store/slices/selectedItemSlice';
-import './Card.css';
+
+import styles from './Card.module.css';
 
 interface CardProps {
   person: Person;
@@ -12,16 +13,15 @@ interface CardProps {
 
 const Card: React.FC<CardProps> = ({ person }) => {
   const dispatch = useDispatch();
-  const navigate = useNavigate();
-  const [searchParams] = useSearchParams();
-  const page = searchParams.get('page') || '1';
+  const router = useRouter();
+  const page = (router.query.page as string) || '1';
 
   const isSelected = useSelector(
     (state: RootState) => !!state.selectedItem.selectedItems[person.url],
   );
 
   const handleCardClick = () => {
-    navigate(`/details/${person.url.split('/')[5]}?page=${page}`);
+    router.push(`/details/${person.url.split('/')[5]}?page=${page}`);
   };
 
   const handleCheckboxChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -34,8 +34,8 @@ const Card: React.FC<CardProps> = ({ person }) => {
   };
 
   return (
-    <li className="result-item">
-      <div className="checkbox-container">
+    <li className={styles['result-item']}>
+      <div className={styles['checkbox-container']}>
         <label>
           <input
             type="checkbox"
@@ -47,7 +47,7 @@ const Card: React.FC<CardProps> = ({ person }) => {
       </div>
       <div onClick={handleCardClick}>
         <h3>{person.name}</h3>
-        <div className="attributes-grid">
+        <div className={styles['attributes-grid']}>
           <p>
             <strong>Height</strong>: {person.height}
           </p>

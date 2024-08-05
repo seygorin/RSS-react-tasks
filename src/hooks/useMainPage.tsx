@@ -1,14 +1,11 @@
 import { useState, useEffect } from 'react';
-
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useRouter } from 'next/router';
 
 const useMainPage = () => {
   const [isInitialLoadComplete, setIsInitialLoadComplete] = useState(false);
-
   const [hasError, setHasError] = useState(false);
-  const navigate = useNavigate();
-  const [searchParams] = useSearchParams();
-  const page = searchParams.get('page') || '1';
+  const router = useRouter();
+  const page = (router.query.page as string) || '1';
 
   useEffect(() => {
     setIsInitialLoadComplete(true);
@@ -19,7 +16,7 @@ const useMainPage = () => {
   };
 
   const closeDetails = () => {
-    navigate(`/?page=${page}`);
+    router.push(`/?page=${page}`);
   };
 
   return {

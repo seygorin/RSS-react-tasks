@@ -1,7 +1,7 @@
 import React, { useState, useEffect, ChangeEvent, FormEvent } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useRouter } from 'next/router';
 import Button from '../Button/Button';
-import './SearchInput.css';
+import styles from './SearchInput.module.css';
 
 interface Props {
   onSearch: (searchTerm: string) => void;
@@ -10,7 +10,7 @@ interface Props {
 
 const SearchInput: React.FC<Props> = ({ onSearch, initialSearchTerm }) => {
   const [searchTerm, setSearchTerm] = useState(initialSearchTerm);
-  const navigate = useNavigate();
+  const router = useRouter();
 
   useEffect(() => {
     setSearchTerm(initialSearchTerm);
@@ -26,17 +26,17 @@ const SearchInput: React.FC<Props> = ({ onSearch, initialSearchTerm }) => {
     onSearch(trimmedSearchTerm);
 
     if (trimmedSearchTerm) {
-      navigate(`/?search=${trimmedSearchTerm}`);
+      router.push(`/?search=${trimmedSearchTerm}`);
     } else {
-      navigate(`/`);
+      router.push('/');
     }
   };
 
   return (
-    <form className="search-form" onSubmit={handleSubmit}>
+    <form className={styles['search-form']} onSubmit={handleSubmit}>
       <input
         type="text"
-        className="search-input"
+        className={styles['search-input']}
         value={searchTerm}
         onChange={handleChange}
       />

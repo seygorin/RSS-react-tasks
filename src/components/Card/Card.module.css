@@ -1,0 +1,31 @@
+.result-item {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  border-radius: 0.5rem;
+  width: 400px;
+  background-color: var(--result-item-background);
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+}
+
+.result-item h3 {
+  margin: 0 0 10px;
+  text-align: center;
+}
+
+.attributes-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+}
+
+.attributes-grid p {
+  background-color: var(--result-attributes-grid-background);
+  padding: 5px;
+  border-radius: 4px;
+  margin: 0;
+}
+

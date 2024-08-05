@@ -1,5 +1,5 @@
 import React, { ButtonHTMLAttributes } from 'react';
-import './Button.css';
+import styles from './Button.module.css';
 
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   variant?:
@@ -16,11 +16,11 @@ const Button: React.FC<ButtonProps> = ({
   ...props
 }) => {
   const variantClass = {
-    default: 'button',
-    pagination: 'button pagination-button',
-    search: 'button search-button',
-    errorBoundary: 'button error-boundary-button',
-    toggleTheme: 'button toggle-theme-button',
+    default: styles.button,
+    pagination: `${styles.button} ${styles['pagination-button']}`,
+    search: `${styles.button} ${styles['search-button']}`,
+    errorBoundary: `${styles.button} ${styles['error-boundary-button']}`,
+    toggleTheme: `${styles.button} ${styles['toggle-theme-button']}`,
   }[variant];
 
   return <button className={`${variantClass} ${className}`} {...props} />;

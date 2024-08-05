@@ -3,6 +3,8 @@ import { Person } from '../../store/api/interfaces';
 import Card from '../Card/Card';
 import NoResults from '../NoResults/NoResults';
 
+import styles from './CardList.module.css';
+
 interface CardListProps {
   people: Person[];
 }
@@ -13,7 +15,7 @@ const CardList: React.FC<CardListProps> = ({ people }) => {
   }
 
   return (
-    <ul className="results-list">
+    <ul className={styles['result-list']}>
       {people.map((person) => (
         <Card key={person.url} person={person} />
       ))}
