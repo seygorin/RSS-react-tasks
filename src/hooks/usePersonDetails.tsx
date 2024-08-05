@@ -1,34 +1,24 @@
-import { useState, useEffect } from 'react';
-import { fetchPersonDetails } from '../services/api';
-import { Person } from '../services/interfaces';
+import { useFetchPersonDetailsQuery } from '../store/api/personApi';
+import { useDispatch } from 'react-redux';
+import { AppDispatch } from '../store/store';
+import { selectItem } from '../store/slices/selectedItemSlice';
+import { useEffect } from 'react';
 
 const usePersonDetails = (id: string | undefined) => {
-  const [person, setPerson] = useState<Person | null>(null);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const dispatch = useDispatch<AppDispatch>();
+  const {
+    data: person,
+    isLoading,
+    error,
+  } = useFetchPersonDetailsQuery(id || '');
 
   useEffect(() => {
-    if (id) {
-      loadPersonDetails(id);
+    if (person) {
+      dispatch(selectItem(person));
     }
-  }, [id]);
+  }, [person, dispatch]);
 
-  const loadPersonDetails = async (personId: string) => {
-    setLoading(true);
-    setError(null);
-
-    try {
-      const response = await fetchPersonDetails(personId);
-      setPerson(response.data);
-    } catch (error) {
-      console.error(error);
-      setError('Failed to fetch details');
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  return { person, loading, error };
+  return { person, isLoading, error };
 };
 
 export default usePersonDetails;

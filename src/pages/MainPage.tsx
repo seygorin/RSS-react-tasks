@@ -1,22 +1,27 @@
-import React from 'react';
-import { Outlet } from 'react-router-dom';
-import useMainPageLogic from '../hooks/useMainPage';
-import SearchInput from '../components/SearchInput';
-import Results from '../components/Results';
-import Button from '../components/Button';
+import React, { useEffect } from 'react';
+import { Outlet, useLocation, useSearchParams } from 'react-router-dom';
+import useMainPage from '../hooks/useMainPage';
+
+import useBoundaryError from '../hooks/useBoundaryError';
+import Results from '../components/Result/Results';
+import Button from '../components/Button/Button';
+import Flyout from '../components/Flyout/Flyout';
+import Header from '../components/Header/Header';
+import { useTheme } from '../context/ThemeContext';
 import './MainPage.css';
 
 const MainPage: React.FC = () => {
-  const {
-    searchTerm,
-    isInitialLoadComplete,
-    selectedItemDetails,
-    hasError,
-    handleSearch,
-    throwError,
-    handleItemClick,
-    closeDetails,
-  } = useMainPageLogic();
+  const { isInitialLoadComplete, closeDetails } = useMainPage();
+  const { theme } = useTheme();
+  const location = useLocation();
+  const [searchParams] = useSearchParams();
+  const showDetails = location.pathname.includes('/details');
+
+  const { hasError, throwError } = useBoundaryError();
+
+  useEffect(() => {
+    document.documentElement.setAttribute('data-theme', theme);
+  }, [theme]);
 
   if (hasError) {
     throw new Error('Test error');
@@ -24,22 +29,14 @@ const MainPage: React.FC = () => {
 
   return (
     <main className="main-page">
-      <Button variant="errorBoundary" onClick={throwError}>
-        Throw Error
-      </Button>
-      <div className="top-section">
-        <SearchInput onSearch={handleSearch} initialSearchTerm={searchTerm} />
-      </div>
-      <div
-        className="content-section"
-        onClick={() => selectedItemDetails && closeDetails()}
-      >
+      <Header throwError={throwError} />
+      <div className="content-section">
         <div className="left-section">
           {isInitialLoadComplete && (
-            <Results searchTerm={searchTerm} onItemClick={handleItemClick} />
+            <Results searchTerm={searchParams.get('search') || ''} />
           )}
         </div>
-        {selectedItemDetails && (
+        {showDetails && (
           <div className="right-section">
             <Outlet />
             <Button variant="pagination" onClick={closeDetails}>
@@ -48,6 +45,7 @@ const MainPage: React.FC = () => {
           </div>
         )}
       </div>
+      <Flyout />
     </main>
   );
 };

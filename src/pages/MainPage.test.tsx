@@ -1,84 +1,94 @@
+import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
-import { BrowserRouter } from 'react-router-dom';
+import { MemoryRouter, Route, Routes } from 'react-router-dom';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import MainPage from './MainPage';
-import useMainPageLogic from '../hooks/useMainPage';
+import useMainPage from '../hooks/useMainPage';
+import useBoundaryError from '../hooks/useBoundaryError';
+import { ThemeProvider } from '../context/ThemeContext';
 
 vi.mock('../hooks/useMainPage');
+vi.mock('../hooks/useBoundaryError');
+vi.mock('../components/Result/Results', () => ({
+  default: () => <div data-testid="results">Results Component</div>,
+}));
+vi.mock('../components/Flyout/Flyout', () => ({
+  default: () => <div data-testid="flyout">Flyout Component</div>,
+}));
 
 describe('MainPage', () => {
-  const mockedUseMainPageLogic = vi.mocked(useMainPageLogic);
+  const mockUseMainPage = useMainPage as ReturnType<typeof vi.fn>;
+  const mockUseBoundaryError = useBoundaryError as ReturnType<typeof vi.fn>;
 
   beforeEach(() => {
-    mockedUseMainPageLogic.mockReturnValue({
-      searchTerm: '',
-      isInitialLoadComplete: false,
-      selectedItemDetails: null,
-      hasError: false,
-      handleSearch: vi.fn(),
-      throwError: vi.fn(),
-      handleItemClick: vi.fn(),
+    mockUseMainPage.mockReturnValue({
+      isInitialLoadComplete: true,
       closeDetails: vi.fn(),
     });
+    mockUseBoundaryError.mockReturnValue({
+      hasError: false,
+      throwError: vi.fn(),
+    });
   });
+
+  const renderWithRouter = (ui: React.ReactElement, { route = '/' } = {}) => {
+    return render(
+      <MemoryRouter initialEntries={[route]}>
+        <ThemeProvider>
+          <Routes>
+            <Route path="/" element={ui}>
+              <Route path="details/:id" element={<div>Details</div>} />
+            </Route>
+          </Routes>
+        </ThemeProvider>
+      </MemoryRouter>,
+    );
+  };
 
   it('should render the main page components correctly', () => {
-    render(
-      <BrowserRouter>
-        <MainPage />
-      </BrowserRouter>,
-    );
+    renderWithRouter(<MainPage />);
 
-    expect(screen.getByText('Throw Error')).toBeInTheDocument();
+    expect(screen.getByTestId('results')).toBeInTheDocument();
+    expect(screen.getByTestId('flyout')).toBeInTheDocument();
   });
 
-  it('should call throwError when the "Throw Error" button is clicked', () => {
-    const throwError = vi.fn();
-    mockedUseMainPageLogic.mockReturnValueOnce({
-      ...mockedUseMainPageLogic(),
-      throwError,
+  it('should not render Results when isInitialLoadComplete is false', () => {
+    mockUseMainPage.mockReturnValue({
+      isInitialLoadComplete: false,
+      closeDetails: vi.fn(),
     });
 
-    render(
-      <BrowserRouter>
-        <MainPage />
-      </BrowserRouter>,
-    );
+    renderWithRouter(<MainPage />);
 
-    fireEvent.click(screen.getByText('Throw Error'));
-    expect(throwError).toHaveBeenCalled();
+    expect(screen.queryByTestId('results')).not.toBeInTheDocument();
   });
 
-  it('should render the selected item details and close button when an item is selected', () => {
-    mockedUseMainPageLogic.mockReturnValueOnce({
-      ...mockedUseMainPageLogic(),
-      selectedItemDetails: { id: 1 },
-    });
+  it('should render details when on a details route', () => {
+    renderWithRouter(<MainPage />, { route: '/details/1' });
 
-    render(
-      <BrowserRouter>
-        <MainPage />
-      </BrowserRouter>,
-    );
-
+    expect(screen.getByText('Details')).toBeInTheDocument();
     expect(screen.getByText('Close')).toBeInTheDocument();
   });
 
   it('should call closeDetails when the close button is clicked', () => {
-    const closeDetails = vi.fn();
-    mockedUseMainPageLogic.mockReturnValueOnce({
-      ...mockedUseMainPageLogic(),
-      selectedItemDetails: { id: 1 },
-      closeDetails,
+    const mockCloseDetails = vi.fn();
+    mockUseMainPage.mockReturnValue({
+      isInitialLoadComplete: true,
+      closeDetails: mockCloseDetails,
     });
 
-    render(
-      <BrowserRouter>
-        <MainPage />
-      </BrowserRouter>,
-    );
+    renderWithRouter(<MainPage />, { route: '/details/1' });
 
     fireEvent.click(screen.getByText('Close'));
-    expect(closeDetails).toHaveBeenCalled();
+    expect(mockCloseDetails).toHaveBeenCalled();
+  });
+
+  it('should throw an error when hasError is true', () => {
+    mockUseBoundaryError.mockReturnValue({
+      hasError: true,
+      throwError: vi.fn(),
+    });
+
+    expect(() => renderWithRouter(<MainPage />)).toThrow('Test error');
   });
 });

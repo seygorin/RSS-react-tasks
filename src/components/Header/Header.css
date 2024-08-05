@@ -1,0 +1,15 @@
+.header {
+  padding: 10px;
+  background-color: var(--header-background);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+[data-theme='light'] {
+  --header-background: rgb(130, 130, 229);
+}
+
+[data-theme='dark'] {
+  --header-background: #333;
+}

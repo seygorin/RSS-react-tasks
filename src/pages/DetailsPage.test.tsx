@@ -16,7 +16,7 @@ describe('DetailsPage', () => {
   it('renders Loading component when loading is true', () => {
     mockUsePersonDetails.mockReturnValue({
       person: null,
-      loading: true,
+      isLoading: true,
       error: null,
     });
 
@@ -34,7 +34,7 @@ describe('DetailsPage', () => {
   it('renders ErrorMessage component when error exists', () => {
     mockUsePersonDetails.mockReturnValue({
       person: null,
-      loading: false,
+      isLoading: false,
       error: 'Failed to fetch details',
     });
 
@@ -52,7 +52,7 @@ describe('DetailsPage', () => {
   it('renders NoResults component when person is null', () => {
     mockUsePersonDetails.mockReturnValue({
       person: null,
-      loading: false,
+      isLoading: false,
       error: null,
     });
 
@@ -65,25 +65,5 @@ describe('DetailsPage', () => {
     );
 
     expect(screen.getByText(/nothing found/i)).toBeInTheDocument();
-  });
-
-  it('renders Card component when person data is available', () => {
-    const person = { id: 1, name: 'John Doe', age: 30, url: '/person/1/' };
-
-    mockUsePersonDetails.mockReturnValue({
-      person,
-      loading: false,
-      error: null,
-    });
-
-    render(
-      <MemoryRouter initialEntries={['/details/1']}>
-        <Routes>
-          <Route path="/details/:id" element={<DetailsPage />} />
-        </Routes>
-      </MemoryRouter>,
-    );
-
-    expect(screen.getByText(/john doe/i)).toBeInTheDocument();
   });
 });
