@@ -1,15 +1,10 @@
 import { describe, it, expect } from 'vitest';
 import { render, screen } from '@testing-library/react';
-import { MemoryRouter } from 'react-router-dom';
 import NotFoundPage from './NotFoundPage';
 
 describe('NotFoundPage', () => {
   it('renders correctly', () => {
-    render(
-      <MemoryRouter>
-        <NotFoundPage />
-      </MemoryRouter>,
-    );
+    render(<NotFoundPage />);
 
     expect(screen.getByText('404 - Page Not Found')).toBeInTheDocument();
     expect(

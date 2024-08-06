@@ -1,33 +1,45 @@
 import { describe, it, expect, vi } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
 import Button from './Button';
+import styles from './Button.module.css';
 
 describe('Button Component', () => {
   it('renders with default variant', () => {
     render(<Button>Default Button</Button>);
     const button = screen.getByRole('button');
-    expect(button).toHaveClass('button');
-    expect(button).not.toHaveClass('pagination-button');
-    expect(button).not.toHaveClass('search-button');
-    expect(button).not.toHaveClass('error-boundary-button');
+    expect(button.className).toContain(styles.button);
+    expect(button.className).not.toContain('pagination-button');
+    expect(button.className).not.toContain('search-button');
+    expect(button.className).not.toContain('error-boundary-button');
+    expect(button.className).not.toContain('toggle-theme-button');
   });
 
   it('renders with pagination variant', () => {
     render(<Button variant="pagination">Pagination Button</Button>);
     const button = screen.getByRole('button');
-    expect(button).toHaveClass('button pagination-button');
+    expect(button.className).toContain(styles.button);
+    expect(button.className).toContain(styles['pagination-button']);
   });
 
   it('renders with search variant', () => {
     render(<Button variant="search">Search Button</Button>);
     const button = screen.getByRole('button');
-    expect(button).toHaveClass('button search-button');
+    expect(button.className).toContain(styles.button);
+    expect(button.className).toContain(styles['search-button']);
   });
 
   it('renders with errorBoundary variant', () => {
     render(<Button variant="errorBoundary">Error Boundary Button</Button>);
     const button = screen.getByRole('button');
-    expect(button).toHaveClass('button error-boundary-button');
+    expect(button.className).toContain(styles.button);
+    expect(button.className).toContain(styles['error-boundary-button']);
+  });
+
+  it('renders with toggleTheme variant', () => {
+    render(<Button variant="toggleTheme">Toggle Theme Button</Button>);
+    const button = screen.getByRole('button');
+    expect(button.className).toContain(styles.button);
+    expect(button.className).toContain(styles['toggle-theme-button']);
   });
 
   it('handles click events', () => {
@@ -41,7 +53,8 @@ describe('Button Component', () => {
   it('applies additional class names', () => {
     render(<Button className="extra-class">Button with Extra Class</Button>);
     const button = screen.getByRole('button');
-    expect(button).toHaveClass('button extra-class');
+    expect(button.className).toContain(styles.button);
+    expect(button.className).toContain('extra-class');
   });
 
   it('passes other props to the button element', () => {

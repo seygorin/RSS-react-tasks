@@ -4,7 +4,6 @@ import { useRouter } from 'next/router';
 import { Person } from '../../store/api/interfaces';
 import { RootState } from '../../store/store';
 import { selectItem, unselectItem } from '../../store/slices/selectedItemSlice';
-
 import styles from './Card.module.css';
 
 interface CardProps {
@@ -21,7 +20,9 @@ const Card: React.FC<CardProps> = ({ person }) => {
   );
 
   const handleCardClick = () => {
-    router.push(`/details/${person.url.split('/')[5]}?page=${page}`);
+    router.push(`/?id=${person.url.split('/')[5]}&page=${page}`, undefined, {
+      shallow: true,
+    });
   };
 
   const handleCheckboxChange = (event: ChangeEvent<HTMLInputElement>) => {

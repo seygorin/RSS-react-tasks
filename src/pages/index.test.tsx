@@ -1,11 +1,15 @@
 import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
-import { MemoryRouter, Route, Routes } from 'react-router-dom';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import MainPage from './index';
 import useMainPage from '../hooks/useMainPage';
 import useBoundaryError from '../hooks/useBoundaryError';
 import { ThemeProvider } from '../context/ThemeContext';
+import { useRouter, NextRouter } from 'next/router';
+
+vi.mock('next/router', () => ({
+  useRouter: vi.fn(),
+}));
 
 vi.mock('../hooks/useMainPage');
 vi.mock('../hooks/useBoundaryError');
@@ -19,6 +23,7 @@ vi.mock('../components/Flyout/Flyout', () => ({
 describe('MainPage', () => {
   const mockUseMainPage = useMainPage as ReturnType<typeof vi.fn>;
   const mockUseBoundaryError = useBoundaryError as ReturnType<typeof vi.fn>;
+  const mockRouterPush = vi.fn();
 
   beforeEach(() => {
     mockUseMainPage.mockReturnValue({
@@ -29,24 +34,18 @@ describe('MainPage', () => {
       hasError: false,
       throwError: vi.fn(),
     });
+    vi.mocked(useRouter).mockReturnValue({
+      query: {},
+      push: mockRouterPush,
+    } as unknown as NextRouter);
   });
 
-  const renderWithRouter = (ui: React.ReactElement, { route = '/' } = {}) => {
-    return render(
-      <MemoryRouter initialEntries={[route]}>
-        <ThemeProvider>
-          <Routes>
-            <Route path="/" element={ui}>
-              <Route path="details/:id" element={<div>Details</div>} />
-            </Route>
-          </Routes>
-        </ThemeProvider>
-      </MemoryRouter>,
-    );
+  const renderWithProviders = (ui: React.ReactElement) => {
+    return render(<ThemeProvider>{ui}</ThemeProvider>);
   };
 
   it('should render the main page components correctly', () => {
-    renderWithRouter(<MainPage />);
+    renderWithProviders(<MainPage />);
 
     expect(screen.getByTestId('results')).toBeInTheDocument();
     expect(screen.getByTestId('flyout')).toBeInTheDocument();
@@ -58,29 +57,41 @@ describe('MainPage', () => {
       closeDetails: vi.fn(),
     });
 
-    renderWithRouter(<MainPage />);
+    renderWithProviders(<MainPage />);
 
     expect(screen.queryByTestId('results')).not.toBeInTheDocument();
   });
 
-  it('should render details when on a details route', () => {
-    renderWithRouter(<MainPage />, { route: '/details/1' });
+  it('should render details when id is present in the query', () => {
+    vi.mocked(useRouter).mockReturnValue({
+      query: { id: '1' },
+      push: mockRouterPush,
+    } as unknown as NextRouter);
 
-    expect(screen.getByText('Details')).toBeInTheDocument();
+    renderWithProviders(<MainPage />);
+
+    expect(screen.getByText('Loading...')).toBeInTheDocument();
     expect(screen.getByText('Close')).toBeInTheDocument();
   });
 
-  it('should call closeDetails when the close button is clicked', () => {
+  it('should call closeDetails and navigate to main page when the close button is clicked', () => {
     const mockCloseDetails = vi.fn();
     mockUseMainPage.mockReturnValue({
       isInitialLoadComplete: true,
       closeDetails: mockCloseDetails,
     });
+    vi.mocked(useRouter).mockReturnValue({
+      query: { id: '1' },
+      push: mockRouterPush,
+    } as unknown as NextRouter);
 
-    renderWithRouter(<MainPage />, { route: '/details/1' });
+    renderWithProviders(<MainPage />);
 
     fireEvent.click(screen.getByText('Close'));
     expect(mockCloseDetails).toHaveBeenCalled();
+    expect(mockRouterPush).toHaveBeenCalledWith('/', undefined, {
+      shallow: true,
+    });
   });
 
   it('should throw an error when hasError is true', () => {
@@ -89,6 +100,6 @@ describe('MainPage', () => {
       throwError: vi.fn(),
     });
 
-    expect(() => renderWithRouter(<MainPage />)).toThrow('Test error');
+    expect(() => renderWithProviders(<MainPage />)).toThrow('Test error');
   });
 });

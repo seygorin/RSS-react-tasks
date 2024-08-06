@@ -1,10 +1,9 @@
 import { render, screen } from '@testing-library/react';
-import { MemoryRouter, Route, Routes } from 'react-router-dom';
 import { beforeEach, describe, it, expect, vi } from 'vitest';
-import DetailsPage from './DetailsPage';
-import usePersonDetails from '../hooks/usePersonDetails';
+import DetailsPage from './[id]';
+import usePersonDetails from '../../hooks/usePersonDetails';
 
-vi.mock('../hooks/usePersonDetails');
+vi.mock('../../hooks/usePersonDetails');
 
 const mockUsePersonDetails = vi.fn();
 
@@ -20,13 +19,7 @@ describe('DetailsPage', () => {
       error: null,
     });
 
-    render(
-      <MemoryRouter initialEntries={['/details/1']}>
-        <Routes>
-          <Route path="/details/:id" element={<DetailsPage />} />
-        </Routes>
-      </MemoryRouter>,
-    );
+    render(<DetailsPage id="1" />);
 
     expect(screen.getByText(/loading/i)).toBeInTheDocument();
   });
@@ -38,13 +31,7 @@ describe('DetailsPage', () => {
       error: 'Failed to fetch details',
     });
 
-    render(
-      <MemoryRouter initialEntries={['/details/1']}>
-        <Routes>
-          <Route path="/details/:id" element={<DetailsPage />} />
-        </Routes>
-      </MemoryRouter>,
-    );
+    render(<DetailsPage id="1" />);
 
     expect(screen.getByText(/failed to fetch details/i)).toBeInTheDocument();
   });
@@ -56,13 +43,7 @@ describe('DetailsPage', () => {
       error: null,
     });
 
-    render(
-      <MemoryRouter initialEntries={['/details/1']}>
-        <Routes>
-          <Route path="/details/:id" element={<DetailsPage />} />
-        </Routes>
-      </MemoryRouter>,
-    );
+    render(<DetailsPage id="1" />);
 
     expect(screen.getByText(/nothing found/i)).toBeInTheDocument();
   });

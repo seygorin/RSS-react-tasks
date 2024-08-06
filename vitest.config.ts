@@ -7,7 +7,12 @@ export default defineConfig({
     globals: true,
     environment: 'jsdom',
     setupFiles: '/src/__test__/setupTests.ts',
-    exclude: ['**/node_modules/**', '**/dist/**'],
+    exclude: [
+      '**/node_modules/**',
+      '**/dist/**',
+      '**/.next/**',
+      '**/next.config.mjs',
+    ],
     coverage: {
       provider: 'v8',
       reporter: ['text', 'json', 'html'],
@@ -26,6 +31,8 @@ export default defineConfig({
         '**/index.ts',
         '**/*.config.ts',
         'build',
+        '**/.next/**',
+        '**/next.config.mjs',
       ],
       thresholds: {
         lines: 80,

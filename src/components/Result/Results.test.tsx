@@ -1,7 +1,6 @@
 import React from 'react';
 import { expect, describe, it, vi, beforeEach } from 'vitest';
 import { render, screen, waitFor } from '@testing-library/react';
-import { MemoryRouter } from 'react-router-dom';
 import { Provider } from 'react-redux';
 import { configureStore } from '@reduxjs/toolkit';
 import Results from './Results';
@@ -30,13 +29,13 @@ vi.mock('../../store/api/personApi', () => ({
   useFetchPeopleQuery: () => mockUseFetchPeopleQuery(),
 }));
 
-vi.mock('react-router-dom', async () => {
-  const actual = await vi.importActual('react-router-dom');
-  return {
-    ...actual,
-    useSearchParams: () => [new URLSearchParams('page=1'), vi.fn()],
-  };
-});
+const mockPush = vi.fn();
+vi.mock('next/router', () => ({
+  useRouter: () => ({
+    query: { page: '1' },
+    push: mockPush,
+  }),
+}));
 
 const mockProps = {
   searchTerm: 'Luke',
@@ -63,11 +62,7 @@ describe('Results Component', () => {
     });
 
     return {
-      ...render(
-        <Provider store={store}>
-          <MemoryRouter>{ui}</MemoryRouter>
-        </Provider>,
-      ),
+      ...render(<Provider store={store}>{ui}</Provider>),
       store,
     };
   };
@@ -80,7 +75,7 @@ describe('Results Component', () => {
     });
 
     renderWithRedux(<Results {...mockProps} />);
-    expect(screen.getByText(/loading/i)).toBeInTheDocument();
+    expect(screen.getByText(/loading/i)).toBeDefined();
   });
 
   it('renders error state', () => {
@@ -91,7 +86,7 @@ describe('Results Component', () => {
     });
 
     renderWithRedux(<Results {...mockProps} />);
-    expect(screen.getByText(/failed to fetch data/i)).toBeInTheDocument();
+    expect(screen.getByText(/failed to fetch data/i)).toBeDefined();
   });
 
   it('renders people when data is available', async () => {
@@ -106,8 +101,8 @@ describe('Results Component', () => {
     });
 
     await waitFor(() => {
-      expect(screen.getByText('Luke Skywalker')).toBeInTheDocument();
-      expect(screen.getByText('C-3PO')).toBeInTheDocument();
+      expect(screen.getByText('Luke Skywalker')).toBeDefined();
+      expect(screen.getByText('C-3PO')).toBeDefined();
     });
   });
 });

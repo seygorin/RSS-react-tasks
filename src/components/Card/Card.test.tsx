@@ -1,22 +1,20 @@
 import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import configureStore from 'redux-mock-store';
 import { Provider } from 'react-redux';
-import { useNavigate, useSearchParams, MemoryRouter } from 'react-router-dom';
+import configureStore from 'redux-mock-store';
 import Card from './Card';
 import { Person } from '../../store/api/interfaces';
 import { selectItem, unselectItem } from '../../store/slices/selectedItemSlice';
 import { RootState } from '../../store/store';
 
-vi.mock('react-router-dom', async () => {
-  const actual = await vi.importActual('react-router-dom');
-  return {
-    ...actual,
-    useNavigate: vi.fn(),
-    useSearchParams: vi.fn(),
-  };
-});
+const mockPush = vi.fn();
+vi.mock('next/router', () => ({
+  useRouter: () => ({
+    query: { page: '1' },
+    push: mockPush,
+  }),
+}));
 
 const mockStore = configureStore([]);
 
@@ -38,19 +36,11 @@ describe('Card', () => {
     initialState: Partial<RootState> = {},
   ) => {
     const store = mockStore(initialState);
-    return render(
-      <Provider store={store}>
-        <MemoryRouter>{component}</MemoryRouter>
-      </Provider>,
-    );
+    return render(<Provider store={store}>{component}</Provider>);
   };
 
   beforeEach(() => {
-    vi.mocked(useNavigate).mockReturnValue(vi.fn());
-    vi.mocked(useSearchParams).mockReturnValue([
-      new URLSearchParams(),
-      vi.fn(),
-    ]);
+    vi.clearAllMocks();
   });
 
   it('renders relevant card data', () => {
@@ -58,30 +48,28 @@ describe('Card', () => {
       selectedItem: { selectedItems: {} },
     });
 
-    expect(screen.getByText(mockPerson.name)).toBeInTheDocument();
-    expect(screen.getByText(/height/i)).toBeInTheDocument();
-    expect(screen.getByText(/180/i)).toBeInTheDocument();
-    expect(screen.getByText(/mass/i)).toBeInTheDocument();
-    expect(screen.getByText(/75/i)).toBeInTheDocument();
-    expect(screen.getByText(/hair color/i)).toBeInTheDocument();
-    expect(screen.getByText(/brown/i)).toBeInTheDocument();
-    expect(screen.getByText(/skin color/i)).toBeInTheDocument();
-    expect(screen.getByText(/fair/i)).toBeInTheDocument();
-    expect(screen.getByText(/eye color/i)).toBeInTheDocument();
-    expect(screen.getByText(/blue/i)).toBeInTheDocument();
-    expect(screen.getByText(/birth year/i)).toBeInTheDocument();
-    expect(screen.getByText(/1990/i)).toBeInTheDocument();
-    expect(screen.getByText(/gender/i)).toBeInTheDocument();
-    expect(screen.getByText(/male/i)).toBeInTheDocument();
+    expect(screen.getByText(mockPerson.name)).toBeDefined();
+    expect(screen.getByText(/height/i)).toBeDefined();
+    expect(screen.getByText(/180/i)).toBeDefined();
+    expect(screen.getByText(/mass/i)).toBeDefined();
+    expect(screen.getByText(/75/i)).toBeDefined();
+    expect(screen.getByText(/hair color/i)).toBeDefined();
+    expect(screen.getByText(/brown/i)).toBeDefined();
+    expect(screen.getByText(/skin color/i)).toBeDefined();
+    expect(screen.getByText(/fair/i)).toBeDefined();
+    expect(screen.getByText(/eye color/i)).toBeDefined();
+    expect(screen.getByText(/blue/i)).toBeDefined();
+    expect(screen.getByText(/birth year/i)).toBeDefined();
+    expect(screen.getByText(/1990/i)).toBeDefined();
+    expect(screen.getByText(/gender/i)).toBeDefined();
+    expect(screen.getByText(/male/i)).toBeDefined();
   });
 
   it('dispatches selectItem action when checkbox is checked', () => {
     const store = mockStore({ selectedItem: { selectedItems: {} } });
     render(
       <Provider store={store}>
-        <MemoryRouter>
-          <Card person={mockPerson} />
-        </MemoryRouter>
+        <Card person={mockPerson} />
       </Provider>,
     );
 
@@ -100,9 +88,7 @@ describe('Card', () => {
     });
     render(
       <Provider store={store}>
-        <MemoryRouter>
-          <Card person={mockPerson} />
-        </MemoryRouter>
+        <Card person={mockPerson} />
       </Provider>,
     );
 
@@ -114,7 +100,6 @@ describe('Card', () => {
   });
 
   it('navigates to details page on card click', () => {
-    const navigate = vi.mocked(useNavigate)();
     renderWithProviders(<Card person={mockPerson} />, {
       selectedItem: { selectedItems: {} },
     });
@@ -126,6 +111,8 @@ describe('Card', () => {
       throw new Error('Card element is not found');
     }
 
-    expect(navigate).toHaveBeenCalledWith('/details/1?page=1');
+    expect(mockPush).toHaveBeenCalledWith('/?id=1&page=1', undefined, {
+      shallow: true,
+    });
   });
 });
