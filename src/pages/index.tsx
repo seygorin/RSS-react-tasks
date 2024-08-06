@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
-import { useRouter } from 'next/router';
 import dynamic from 'next/dynamic';
+import { useRouter } from 'next/router';
 import useMainPage from '../hooks/useMainPage';
 import useBoundaryError from '../hooks/useBoundaryError';
 import Results from '../components/Result/Results';
