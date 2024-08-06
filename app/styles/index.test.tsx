@@ -1,15 +1,15 @@
 import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import MainPage from './_index';
+import MainPage from '../routes/_index';
 import useMainPage from '../hooks/useMainPage';
 import useBoundaryError from '../hooks/useBoundaryError';
 import { ThemeProvider } from '../context/ThemeContext';
-import { useRouter, NextRouter } from 'next/router';
+// import { useRouter, NextRouter } from 'next/router';
 
-vi.mock('next/router', () => ({
-  useRouter: vi.fn(),
-}));
+// vi.mock('next/router', () => ({
+//   useRouter: vi.fn(),
+// }));
 
 vi.mock('../hooks/useMainPage');
 vi.mock('../hooks/useBoundaryError');

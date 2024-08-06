@@ -10,6 +10,8 @@ import {
 import type { LinksFunction, MetaFunction } from '@remix-run/node';
 import { ThemeProvider } from './context/ThemeContext';
 import ErrorBoundary from './components/ErrorBoundary/ErrorBoundary';
+import { Provider } from 'react-redux';
+import { store } from '../app/store/store';
 import styles from './styles/globals.css';
 
 export const links: LinksFunction = () => [
@@ -42,11 +44,13 @@ export default function App() {
         <Links />
       </head>
       <body>
-        <ThemeProvider>
-          <ErrorBoundary>
-            <Outlet />
-          </ErrorBoundary>
-        </ThemeProvider>
+        <Provider store={store}>
+          <ThemeProvider>
+            <ErrorBoundary>
+              <Outlet />
+            </ErrorBoundary>
+          </ThemeProvider>
+        </Provider>
         <ScrollRestoration />
         <Scripts />
         <LiveReload />

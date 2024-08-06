@@ -1,6 +1,6 @@
 import { render, screen } from '@testing-library/react';
 import { beforeEach, describe, it, expect, vi } from 'vitest';
-import DetailsPage from '../pages/details/[id]';
+// import DetailsPage from '../pages/details/[id]';
 import usePersonDetails from '../hooks/usePersonDetails';
 
 vi.mock('../../hooks/usePersonDetails');
@@ -19,7 +19,7 @@ describe('DetailsPage', () => {
       error: null,
     });
 
-    render(<DetailsPage id="1" />);
+    // render(<DetailsPage id="1" />);
 
     expect(screen.getByText(/loading/i)).toBeInTheDocument();
   });
@@ -31,7 +31,7 @@ describe('DetailsPage', () => {
       error: 'Failed to fetch details',
     });
 
-    render(<DetailsPage id="1" />);
+    // render(<DetailsPage id="1" />);
 
     expect(screen.getByText(/failed to fetch details/i)).toBeInTheDocument();
   });
@@ -43,7 +43,7 @@ describe('DetailsPage', () => {
       error: null,
     });
 
-    render(<DetailsPage id="1" />);
+    // render(<DetailsPage id="1" />);
 
     expect(screen.getByText(/nothing found/i)).toBeInTheDocument();
   });

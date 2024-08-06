@@ -12,7 +12,7 @@ import Results from '../components/Result/Results';
 import Button from '../components/Button/Button';
 import Flyout from '../components/Flyout/Flyout';
 import Header from '../components/Header/Header';
-import styles from './index.module.css';
+import styles from '../styles/index.module.css';
 
 export const loader: LoaderFunction = async ({ request }) => {
   const url = new URL(request.url);

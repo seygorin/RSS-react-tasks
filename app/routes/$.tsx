@@ -1,4 +1,3 @@
-import React from 'react';
 import { useRouteError } from '@remix-run/react';
 import NotFoundPage from '../pages/404/NotFoundPage';
 

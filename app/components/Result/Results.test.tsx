@@ -29,13 +29,13 @@ vi.mock('../../store/api/personApi', () => ({
   useFetchPeopleQuery: () => mockUseFetchPeopleQuery(),
 }));
 
-const mockPush = vi.fn();
-vi.mock('next/router', () => ({
-  useRouter: () => ({
-    query: { page: '1' },
-    push: mockPush,
-  }),
-}));
+// const mockPush = vi.fn();
+// vi.mock('next/router', () => ({
+//   useRouter: () => ({
+//     query: { page: '1' },
+//     push: mockPush,
+//   }),
+// }));
 
 const mockProps = {
   searchTerm: 'Luke',

@@ -7,7 +7,7 @@ import Card from '../components/Card/Card';
 import Loading from '../components/Loading/Loading';
 import ErrorMessage from '../components/ErrorMessage/ErrorMessage';
 import NoResults from '../components/NoResults/NoResults';
-import styles from './DetailsPage.module.css';
+import styles from '../styles/DetailsPage.module.css';
 
 export const loader: LoaderFunction = async ({ params }) => {
   const { id } = params;

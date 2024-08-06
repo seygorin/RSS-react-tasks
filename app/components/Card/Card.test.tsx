@@ -8,13 +8,13 @@ import { Person } from '../../store/api/interfaces';
 import { selectItem, unselectItem } from '../../store/slices/selectedItemSlice';
 import { RootState } from '../../store/store';
 
-const mockPush = vi.fn();
-vi.mock('next/router', () => ({
-  useRouter: () => ({
-    query: { page: '1' },
-    push: mockPush,
-  }),
-}));
+// const mockPush = vi.fn();
+// vi.mock('next/router', () => ({
+//   useRouter: () => ({
+//     query: { page: '1' },
+//     push: mockPush,
+//   }),
+// }));
 
 const mockStore = configureStore([]);
 

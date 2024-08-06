@@ -2,12 +2,12 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
 import SearchInput from './SearchInput';
 
-const mockPush = vi.fn();
-vi.mock('next/router', () => ({
-  useRouter: () => ({
-    push: mockPush,
-  }),
-}));
+// const mockPush = vi.fn();
+// vi.mock('next/router', () => ({
+//   useRouter: () => ({
+//     push: mockPush,
+//   }),
+// }));
 
 describe('SearchInput Component', () => {
   const mockOnSearch = vi.fn();
