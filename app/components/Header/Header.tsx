@@ -13,12 +13,16 @@ const Header: React.FC<HeaderProps> = ({ throwError }) => {
   const { theme, toggleTheme } = useTheme();
   const { searchTerm, handleSearch } = useSearch();
 
+  const handleToggleTheme = async () => {
+    await toggleTheme();
+  };
+
   return (
     <header className={styles['header']}>
       <Button variant="errorBoundary" onClick={throwError}>
         Throw Error
       </Button>
-      <Button variant="toggleTheme" onClick={toggleTheme}>
+      <Button variant="toggleTheme" onClick={handleToggleTheme}>
         {theme === 'light' ? 'Switch to Dark Theme' : 'Switch to Light Theme'}
       </Button>
       <SearchInput onSearch={handleSearch} initialSearchTerm={searchTerm} />

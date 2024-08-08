@@ -1,6 +1,6 @@
 import React, { createContext, useState, useContext, ReactNode } from 'react';
 
-type Theme = 'light' | 'dark';
+export type Theme = 'light' | 'dark';
 
 interface ThemeContextProps {
   theme: Theme;
@@ -19,13 +19,20 @@ export const useTheme = (): ThemeContextProps => {
 
 interface ThemeProviderProps {
   children: ReactNode;
+  initialTheme?: Theme;
 }
 
-export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
-  const [theme, setTheme] = useState<Theme>('light');
+export const ThemeProvider: React.FC<ThemeProviderProps> = ({
+  children,
+  initialTheme,
+}) => {
+  const [theme, setTheme] = useState<Theme>(initialTheme || 'light');
 
   const toggleTheme = () => {
-    setTheme((prevTheme) => (prevTheme === 'light' ? 'dark' : 'light'));
+    const newTheme: Theme = theme === 'light' ? 'dark' : 'light';
+    document.documentElement.setAttribute('data-theme', newTheme);
+    document.cookie = `theme=${newTheme}; path=/; samesite=lax; max-age=${60 * 60 * 24 * 365}`;
+    setTheme(newTheme);
   };
 
   return (

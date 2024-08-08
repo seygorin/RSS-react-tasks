@@ -6,4 +6,5 @@ module.exports = {
   serverBuildDirectory: 'build',
   publicPath: '/build/',
   serverModuleFormat: 'esm',
+  serverDependenciesToBundle: [/^@remix-run\/css-bundle/],
 };

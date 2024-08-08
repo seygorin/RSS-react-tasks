@@ -1,4 +1,3 @@
-import React from 'react';
 import {
   Outlet,
   useLoaderData,
@@ -7,12 +6,12 @@ import {
 } from '@remix-run/react';
 import { json } from '@remix-run/node';
 import type { LoaderFunction } from '@remix-run/node';
-import useMainPage from '../hooks/useMainPage';
-import Results from '../components/Result/Results';
-import Button from '../components/Button/Button';
-import Flyout from '../components/Flyout/Flyout';
-import Header from '../components/Header/Header';
-import styles from '../styles/index.module.css';
+import useMainPage from '~/hooks/useMainPage';
+import Results from '~/components/Result/Results';
+import Button from '~/components/Button/Button';
+import Flyout from '~/components/Flyout/Flyout';
+import Header from '~/components/Header/Header';
+import styles from '~/styles/index.module.css';
 
 export const loader: LoaderFunction = async ({ request }) => {
   const url = new URL(request.url);
@@ -20,7 +19,7 @@ export const loader: LoaderFunction = async ({ request }) => {
   return json({ searchTerm });
 };
 
-const MainPage: React.FC = () => {
+const MainPage = () => {
   const { searchTerm } = useLoaderData<{ searchTerm: string }>();
   const [searchParams] = useSearchParams();
   const { isInitialLoadComplete, closeDetails } = useMainPage();
@@ -33,9 +32,13 @@ const MainPage: React.FC = () => {
     navigate('/', { replace: true });
   };
 
+  const handleThrowError = () => {
+    throw new Error('Test error');
+  };
+
   return (
     <main className={styles['main-page']}>
-      <Header />
+      <Header throwError={handleThrowError} />
       <div className={styles['content-section']}>
         <div className={styles['left-section']}>
           {isInitialLoadComplete && <Results searchTerm={searchTerm} />}

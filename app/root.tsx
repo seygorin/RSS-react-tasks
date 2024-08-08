@@ -6,15 +6,30 @@ import {
   Outlet,
   Scripts,
   ScrollRestoration,
+  useLoaderData,
 } from '@remix-run/react';
-import type { LinksFunction, MetaFunction } from '@remix-run/node';
+import type {
+  LinksFunction,
+  LoaderFunction,
+  MetaFunction,
+} from '@remix-run/node';
 import { ThemeProvider } from './context/ThemeContext';
 import ErrorBoundary from './components/ErrorBoundary/ErrorBoundary';
 import { Provider } from 'react-redux';
 import { store } from '../app/store/store';
-import styles from './styles/globals.css';
+import { cssBundleHref } from '@remix-run/css-bundle';
+import styles from '~/styles/globals.css';
+import { getTheme } from './theme.server';
+
+type Theme = 'light' | 'dark';
+
+export const loader: LoaderFunction = async ({ request }) => {
+  const theme = await getTheme(request);
+  return { theme };
+};
 
 export const links: LinksFunction = () => [
+  ...(cssBundleHref ? [{ rel: 'stylesheet', href: cssBundleHref }] : []),
   { rel: 'stylesheet', href: styles },
   { rel: 'icon', href: '/favicon.ico' },
   { rel: 'preconnect', href: 'https://fonts.googleapis.com' },
@@ -36,16 +51,18 @@ export const meta: MetaFunction = () => [
   { name: 'description', content: 'seygorin: Star Wars Characters Search App' },
 ];
 
-export default function App() {
+export default function Root() {
+  const { theme } = useLoaderData<{ theme: Theme }>();
+
   return (
-    <html lang="en">
+    <html lang="en" data-theme={theme}>
       <head>
         <Meta />
         <Links />
       </head>
       <body>
         <Provider store={store}>
-          <ThemeProvider>
+          <ThemeProvider initialTheme={theme}>
             <ErrorBoundary>
               <Outlet />
             </ErrorBoundary>

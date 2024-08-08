@@ -36,22 +36,44 @@ const Card: React.FC<CardProps> = ({ person }) => {
   };
 
   return (
-    <div className={styles.card} onClick={handleCardClick}>
-      <input
-        type="checkbox"
-        checked={isSelected}
-        onChange={handleCheckboxChange}
-        onClick={(e) => e.stopPropagation()}
-      />
-      <h3>{person.name}</h3>
-      <p>Height: {person.height}</p>
-      <p>Mass: {person.mass}</p>
-      <p>Hair Color: {person.hair_color}</p>
-      <p>Skin Color: {person.skin_color}</p>
-      <p>Eye Color: {person.eye_color}</p>
-      <p>Birth Year: {person.birth_year}</p>
-      <p>Gender: {person.gender}</p>
-    </div>
+    <li className={styles['result-item']}>
+      <div className={styles['checkbox-container']}>
+        <label>
+          <input
+            type="checkbox"
+            checked={isSelected}
+            onChange={handleCheckboxChange}
+          />
+          Select
+        </label>
+      </div>
+      <div onClick={handleCardClick}>
+        <h3>{person.name}</h3>
+        <div className={styles['attributes-grid']}>
+          <p>
+            <strong>Height</strong>: {person.height}
+          </p>
+          <p>
+            <strong>Mass</strong>: {person.mass}
+          </p>
+          <p>
+            <strong>Hair Color</strong>: {person.hair_color}
+          </p>
+          <p>
+            <strong>Skin Color</strong>: {person.skin_color}
+          </p>
+          <p>
+            <strong>Eye Color</strong>: {person.eye_color}
+          </p>
+          <p>
+            <strong>Birth Year</strong>: {person.birth_year}
+          </p>
+          <p>
+            <strong>Gender</strong>: {person.gender}
+          </p>
+        </div>
+      </div>
+    </li>
   );
 };
 
