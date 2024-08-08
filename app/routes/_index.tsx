@@ -1,9 +1,4 @@
-import {
-  Outlet,
-  useLoaderData,
-  useNavigate,
-  useSearchParams,
-} from '@remix-run/react';
+import { useLoaderData, useNavigate, useSearchParams } from '@remix-run/react';
 import { json } from '@remix-run/node';
 import type { LoaderFunction } from '@remix-run/node';
 import useMainPage from '~/hooks/useMainPage';
@@ -11,6 +6,7 @@ import Results from '~/components/Result/Results';
 import Button from '~/components/Button/Button';
 import Flyout from '~/components/Flyout/Flyout';
 import Header from '~/components/Header/Header';
+import DetailsPage from '~/routes/details.$id';
 import styles from '~/styles/index.module.css';
 
 export const loader: LoaderFunction = async ({ request }) => {
@@ -45,7 +41,7 @@ const MainPage = () => {
         </div>
         {showDetails && (
           <div className={styles['right-section']}>
-            <Outlet />
+            <DetailsPage id={id} />
             <Button variant="pagination" onClick={handleCloseDetails}>
               Close
             </Button>

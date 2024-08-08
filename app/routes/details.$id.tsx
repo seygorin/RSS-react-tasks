@@ -1,4 +1,3 @@
-import { useLoaderData } from '@remix-run/react';
 import { json } from '@remix-run/node';
 import type { LoaderFunction } from '@remix-run/node';
 import usePersonDetails from '~/hooks/usePersonDetails';
@@ -8,13 +7,16 @@ import ErrorMessage from '~/components/ErrorMessage/ErrorMessage';
 import NoResults from '~/components/NoResults/NoResults';
 import styles from '~/styles/details.module.css';
 
+interface DetailsPageProps {
+  id: string;
+}
+
 export const loader: LoaderFunction = async ({ params }) => {
   const { id } = params;
   return json({ id });
 };
 
-const DetailsPage = () => {
-  const { id } = useLoaderData<{ id: string }>();
+const DetailsPage: React.FC<DetailsPageProps> = ({ id }) => {
   const { person, isLoading, error } = usePersonDetails(id);
 
   if (isLoading) return <Loading />;

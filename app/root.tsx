@@ -1,4 +1,3 @@
-import React from 'react';
 import {
   Links,
   LiveReload,
@@ -17,6 +16,7 @@ import { ThemeProvider } from './context/ThemeContext';
 import ErrorBoundary from './components/ErrorBoundary/ErrorBoundary';
 import { Provider } from 'react-redux';
 import { store } from '../app/store/store';
+import NotFoundPage from './pages/404/NotFoundPage';
 import { cssBundleHref } from '@remix-run/css-bundle';
 import styles from '~/styles/globals.css';
 import { getTheme } from './theme.server';
@@ -76,4 +76,4 @@ export default function Root() {
   );
 }
 
-export { ErrorBoundary };
+export { ErrorBoundary, NotFoundPage };
