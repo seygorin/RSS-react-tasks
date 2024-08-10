@@ -33,12 +33,17 @@ const SearchInput: React.FC<Props> = ({ onSearch, initialSearchTerm }) => {
   };
 
   return (
-    <form className={styles['search-form']} onSubmit={handleSubmit}>
+    <form
+      className={styles['search-form']}
+      onSubmit={handleSubmit}
+      role="search"
+    >
       <input
         type="text"
         className={styles['search-input']}
         value={searchTerm}
         onChange={handleChange}
+        aria-label="Search input"
       />
       <Button type="submit" variant="search">
         Search

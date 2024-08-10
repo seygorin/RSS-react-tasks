@@ -7,18 +7,15 @@ export default defineConfig({
     globals: true,
     environment: 'jsdom',
     setupFiles: '/app/__test__/setupTests.ts',
-    exclude: [
-      '**/node_modules/**',
-      '**/dist/**',
-      '**/.next/**',
-      '**/next.config.mjs',
-    ],
+    exclude: ['**/node_modules/**', '**/dist/**'],
     coverage: {
       provider: 'v8',
       reporter: ['text', 'json', 'html'],
       reportsDirectory: 'coverage',
       exclude: [
         '**/dist/**',
+        '**/build/**',
+        '**/remix.config.cjs',
         'node_modules',
         '.eslintrc.cjs',
         '**/*.types.ts',
@@ -40,6 +37,11 @@ export default defineConfig({
         branches: 80,
         statements: 80,
       },
+    },
+  },
+  resolve: {
+    alias: {
+      '~': '/app',
     },
   },
 });

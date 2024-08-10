@@ -1,9 +1,5 @@
-import {
-  createHotContext
-} from "/build/_shared/chunk-NSAQ3VKU.js";
-import "/build/_shared/chunk-UWV35TSL.js";
-import "/build/_shared/chunk-PNG5AS42.js";
-export {
-  createHotContext
-};
+import { createHotContext } from '/build/_shared/chunk-NSAQ3VKU.js';
+import '/build/_shared/chunk-UWV35TSL.js';
+import '/build/_shared/chunk-PNG5AS42.js';
+export { createHotContext };
 //# sourceMappingURL=/build/_shared/remix_hmr-J6J6KSBM.js.map

@@ -3,6 +3,7 @@ import { expect, describe, it, vi, beforeEach } from 'vitest';
 import { render, screen, waitFor } from '@testing-library/react';
 import { Provider } from 'react-redux';
 import { configureStore } from '@reduxjs/toolkit';
+import { MemoryRouter, Routes, Route } from 'react-router-dom';
 import Results from './Results';
 import peopleReducer from '../../store/slices/peopleSlice';
 import pageReducer from '../../store/slices/pageSlice';
@@ -29,13 +30,14 @@ vi.mock('../../store/api/personApi', () => ({
   useFetchPeopleQuery: () => mockUseFetchPeopleQuery(),
 }));
 
-// const mockPush = vi.fn();
-// vi.mock('next/router', () => ({
-//   useRouter: () => ({
-//     query: { page: '1' },
-//     push: mockPush,
-//   }),
-// }));
+const mockNavigate = vi.fn();
+vi.mock('@remix-run/react', async () => {
+  const actual = await vi.importActual('@remix-run/react');
+  return {
+    ...actual,
+    useNavigate: () => mockNavigate,
+  };
+});
 
 const mockProps = {
   searchTerm: 'Luke',
@@ -46,7 +48,10 @@ describe('Results Component', () => {
     vi.clearAllMocks();
   });
 
-  const renderWithRedux = (ui: React.ReactNode, initialState = {}) => {
+  const renderWithReduxAndRouter = (
+    ui: React.ReactNode,
+    { route = '/', initialState = {} } = {},
+  ) => {
     const store = configureStore({
       reducer: {
         people: peopleReducer,
@@ -62,7 +67,15 @@ describe('Results Component', () => {
     });
 
     return {
-      ...render(<Provider store={store}>{ui}</Provider>),
+      ...render(
+        <Provider store={store}>
+          <MemoryRouter initialEntries={[route]}>
+            <Routes>
+              <Route path="/" element={ui} />
+            </Routes>
+          </MemoryRouter>
+        </Provider>,
+      ),
       store,
     };
   };
@@ -74,7 +87,7 @@ describe('Results Component', () => {
       data: null,
     });
 
-    renderWithRedux(<Results {...mockProps} />);
+    renderWithReduxAndRouter(<Results {...mockProps} />);
     expect(screen.getByText(/loading/i)).toBeDefined();
   });
 
@@ -85,7 +98,7 @@ describe('Results Component', () => {
       data: null,
     });
 
-    renderWithRedux(<Results {...mockProps} />);
+    renderWithReduxAndRouter(<Results {...mockProps} />);
     expect(screen.getByText(/failed to fetch data/i)).toBeDefined();
   });
 
@@ -96,8 +109,10 @@ describe('Results Component', () => {
       data: { results: mockPeople, count: 2 },
     });
 
-    renderWithRedux(<Results {...mockProps} />, {
-      people: { currentPageData: mockPeople },
+    renderWithReduxAndRouter(<Results {...mockProps} />, {
+      initialState: {
+        people: { currentPageData: mockPeople },
+      },
     });
 
     await waitFor(() => {

@@ -6,22 +6,26 @@ interface ErrorBoundaryProps {
   children?: React.ReactNode;
 }
 
-const ErrorBoundary: React.FC<ErrorBoundaryProps> = ({ children }) => {
+const ErrorFallback: React.FC = () => {
   const error = useRouteError();
 
-  if (error) {
-    return (
-      <div style={{ textAlign: 'center', padding: '20px' }}>
-        <p>Something went wrong:</p>
-        <p>{(error as Error).message || String(error)}</p>
-        <Button variant="pagination" onClick={() => window.location.reload()}>
-          Reload
-        </Button>
-      </div>
-    );
-  }
+  return (
+    <div style={{ textAlign: 'center', padding: '20px' }}>
+      <p>Something went wrong:</p>
+      <p>{(error as Error).message || String(error)}</p>
+      <Button variant="pagination" onClick={() => window.location.reload()}>
+        Reload
+      </Button>
+    </div>
+  );
+};
 
-  return <>{children}</>;
+const ErrorBoundary: React.FC<ErrorBoundaryProps> = ({ children }) => {
+  try {
+    return <>{children}</>;
+  } catch (error) {
+    return <ErrorFallback />;
+  }
 };
 
 export default ErrorBoundary;

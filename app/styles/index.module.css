@@ -20,7 +20,7 @@
 }
 
 .right-section {
-  position:sticky;
+  position: sticky;
   display: flex;
   flex-direction: column;
   align-items: center;
