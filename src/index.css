@@ -32,7 +32,7 @@ h1 {
 
 [data-theme='dark'] {
   --background-color: #1e1e1e;
-  --text-color: white;
+  --text-color: rgb(156, 130, 207);
   --link-color: #9d9dff;
   --link-hover-color: #bcbcff;
 }

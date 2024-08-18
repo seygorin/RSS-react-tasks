@@ -1,51 +1,52 @@
 import React, { useEffect } from 'react';
-import { Outlet, useLocation, useSearchParams } from 'react-router-dom';
-import useMainPage from '../hooks/useMainPage';
-
-import useBoundaryError from '../hooks/useBoundaryError';
-import Results from '../components/Result/Results';
-import Button from '../components/Button/Button';
-import Flyout from '../components/Flyout/Flyout';
-import Header from '../components/Header/Header';
+import { Link } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 import { useTheme } from '../context/ThemeContext';
+
+import { RootState } from '../store/store';
+import UserDataTile from '../components/UserDataTile';
+import Title from '../components/Title';
 import './MainPage.css';
 
 const MainPage: React.FC = () => {
-  const { isInitialLoadComplete, closeDetails } = useMainPage();
-  const { theme } = useTheme();
-  const location = useLocation();
-  const [searchParams] = useSearchParams();
-  const showDetails = location.pathname.includes('/details');
+  const uncontrolledFormData = useSelector(
+    (state: RootState) => state.uncontrolledForm,
+  );
+  const reactHookFormData = useSelector(
+    (state: RootState) => state.reactHookForm,
+  );
 
-  const { hasError, throwError } = useBoundaryError();
+  const { theme } = useTheme();
 
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', theme);
   }, [theme]);
 
-  if (hasError) {
-    throw new Error('Test error');
-  }
-
   return (
-    <main className="main-page">
-      <Header throwError={throwError} />
-      <div className="content-section">
-        <div className="left-section">
-          {isInitialLoadComplete && (
-            <Results searchTerm={searchParams.get('search') || ''} />
-          )}
-        </div>
-        {showDetails && (
-          <div className="right-section">
-            <Outlet />
-            <Button variant="pagination" onClick={closeDetails}>
-              Close
-            </Button>
-          </div>
+    <main className={'main-page'}>
+      <Title>Main Page</Title>
+      <nav>
+        <ul>
+          <li>
+            <Link to="/uncontrolled-form">Uncontrolled Form</Link>
+          </li>
+          <li>
+            <Link to="/react-hook-form">React Hook Form</Link>
+          </li>
+        </ul>
+      </nav>
+      <h2>User Data</h2>
+      <div className={'user-data-container'}>
+        {uncontrolledFormData && (
+          <UserDataTile
+            data={uncontrolledFormData}
+            title="Uncontrolled Form Data"
+          />
+        )}
+        {reactHookFormData && (
+          <UserDataTile data={reactHookFormData} title="React Hook Form Data" />
         )}
       </div>
-      <Flyout />
     </main>
   );
 };

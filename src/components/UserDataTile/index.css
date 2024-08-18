@@ -1,0 +1,51 @@
+.user-data-tile {
+  padding: 20px;
+  border-radius: 8px;
+	border: 1px solid #e0e0e0;
+  background-color: white;
+  transition: background-color 0.3s ease;
+	margin-bottom: 20px;
+}
+
+
+.title {
+  font-size: 24px;
+  font-weight: bold;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.card-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+.card {
+  border: 1px solid #e0e0e0;
+  border-radius: 4px;
+  padding: 15px;
+}
+
+.card h3 {
+  font-size: 18px;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.card p {
+  margin: 5px 0;
+}
+
+.picture-container {
+	display: flex;
+	justify-content: center;
+  margin-top: 20px;
+}
+
+.picture-container img {
+
+	max-width: 200px;
+  height: auto;
+  border-radius: 4px;
+}

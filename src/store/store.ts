@@ -1,18 +1,14 @@
 import { configureStore } from '@reduxjs/toolkit';
-import { personApi } from './api/personApi';
-import pageReducer from './slices/pageSlice';
-import peopleReducer from './slices/peopleSlice';
-import selectedItemReducer from './slices/selectedItemSlice';
+import uncontrolledFormReducer from './slices/uncontrolledFormSlice';
+import reactHookFormReducer from './slices/reactHookFormSlice';
+import countriesReducer from './slices/countriesSlice';
 
 export const store = configureStore({
   reducer: {
-    [personApi.reducerPath]: personApi.reducer,
-    page: pageReducer,
-    people: peopleReducer,
-    selectedItem: selectedItemReducer,
+    uncontrolledForm: uncontrolledFormReducer,
+    reactHookForm: reactHookFormReducer,
+    countries: countriesReducer,
   },
-  middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware().concat(personApi.middleware),
 });
 
 export type RootState = ReturnType<typeof store.getState>;
