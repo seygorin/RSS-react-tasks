@@ -1,0 +1,20 @@
+.flyout {
+  position: sticky;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: var(--flyout-background);
+  box-shadow: var(--flyout-box-shadow);
+  padding: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.flyout p {
+  margin: 0;
+}
+
+.flyout button {
+  margin-left: 10px;
+}

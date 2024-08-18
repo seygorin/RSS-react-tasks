@@ -1,0 +1,84 @@
+:root {
+  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+  color-scheme: light dark;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  margin: 0;
+  font-family: 'Roboto', sans-serif;
+  background-color: var(--background-color);
+  color: var(--text-color);
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: 'Star Jedi', sans-serif;
+}
+
+a {
+  font-weight: 500;
+  text-decoration: inherit;
+  color: var(--link-color);
+}
+
+a:hover {
+  color: var(--link-hover-color);
+}
+
+h1 {
+  font-size: 3.2em;
+  line-height: 1.1;
+}
+
+[data-theme='light'] {
+  --background-color: #ffffff;
+  --text-color: #213547;
+  --link-color: #646cff;
+  --link-hover-color: #747bff;
+  --button-background: white;
+  --button-color: white;
+  --button-hover-background: #ecb6b6;
+  --pagination-button-bg: #c95add;
+  --pagination-button-hover-bg: #550a68;
+  --search-button-bg: #ed82f6;
+  --search-button-hover-bg: #bb00b3;
+  --error-boundary-button-color: rgb(255, 80, 80);
+  --toggle-theme-button-bg: rgb(244, 174, 174);
+  --result-item-background: #fff;
+  --result-attributes-grid-background: #cdd3ee;
+  --flyout-background: #fff;
+  --flyout-box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+  --header-background: rgb(130, 130, 229);
+}
+
+[data-theme='dark'] {
+  --background-color: #1e1e1e;
+  --text-color: white;
+  --link-color: #9d9dff;
+  --link-hover-color: #bcbcff;
+  --button-background: white;
+  --button-color: white;
+  --button-hover-background: #f29e9e;
+  --pagination-button-bg: #c95add89;
+  --pagination-button-hover-bg: #550a687c;
+  --search-button-bg: #ec82f66d;
+  --search-button-hover-bg: #bb00b26e;
+  --error-boundary-button-color: rgb(193, 87, 87);
+  --toggle-theme-button-bg: rgba(244, 174, 174, 0.462);
+  --result-item-background: #333;
+  --result-attributes-grid-background: #7d8195;
+  --result-item-box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
+  --flyout-background: #333;
+  --flyout-box-shadow: 0 -2px 10px rgba(255, 255, 255, 0.1);
+  --header-background: #333;
+}
