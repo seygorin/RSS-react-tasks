@@ -1,9 +1,9 @@
 import React from 'react';
-import { UserData } from '../../store/slices/uncontrolledFormSlice';
+import { StoredUserData } from '../../store/slices/types';
 import './index.css';
 
 interface Props {
-  data: UserData;
+  data: StoredUserData;
   title: string;
 }
 
